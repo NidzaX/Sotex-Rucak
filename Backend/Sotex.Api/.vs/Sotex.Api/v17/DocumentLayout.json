@@ -3,6 +3,26 @@
   "WorkspaceRootPath": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|c:\\users\\sotex\\desktop\\sotex-rucak\\backend\\sotex.api\\model\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|solutionrelative:model\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|c:\\users\\sotex\\desktop\\sotex-rucak\\backend\\sotex.api\\model\\orderedmenuitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|solutionrelative:model\\orderedmenuitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|c:\\users\\sotex\\desktop\\sotex-rucak\\backend\\sotex.api\\model\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|solutionrelative:model\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|c:\\users\\sotex\\desktop\\sotex-rucak\\backend\\sotex.api\\model\\menuitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|solutionrelative:model\\menuitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|c:\\users\\sotex\\desktop\\sotex-rucak\\backend\\sotex.api\\model\\sidedish.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|solutionrelative:model\\sidedish.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|c:\\users\\sotex\\desktop\\sotex-rucak\\backend\\sotex.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8BB96C41-822D-427C-9B2A-080314C11AF6}|Sotex.Api.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -14,17 +34,82 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SideDish.cs",
+              "DocumentMoniker": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Model\\SideDish.cs",
+              "RelativeDocumentMoniker": "Model\\SideDish.cs",
+              "ToolTip": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Model\\SideDish.cs",
+              "RelativeToolTip": "Model\\SideDish.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T12:46:28.959Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "OrderedMenuItem.cs",
+              "DocumentMoniker": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Model\\OrderedMenuItem.cs",
+              "RelativeDocumentMoniker": "Model\\OrderedMenuItem.cs",
+              "ToolTip": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Model\\OrderedMenuItem.cs",
+              "RelativeToolTip": "Model\\OrderedMenuItem.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T12:33:39.479Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Order.cs",
+              "DocumentMoniker": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Model\\Order.cs",
+              "RelativeDocumentMoniker": "Model\\Order.cs",
+              "ToolTip": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Model\\Order.cs",
+              "RelativeToolTip": "Model\\Order.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T12:27:19.686Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MenuItem.cs",
+              "DocumentMoniker": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Model\\MenuItem.cs",
+              "RelativeDocumentMoniker": "Model\\MenuItem.cs",
+              "ToolTip": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Model\\MenuItem.cs",
+              "RelativeToolTip": "Model\\MenuItem.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T12:25:16.488Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Model\\User.cs",
+              "RelativeDocumentMoniker": "Model\\User.cs",
+              "ToolTip": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Model\\User.cs",
+              "RelativeToolTip": "Model\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T12:22:45.239Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\Sotex\\Desktop\\Sotex-Rucak\\Backend\\Sotex.Api\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-10T10:33:53.08Z",
               "EditorCaption": ""

@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sotex.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+897a3c7aeab78da2e49528316960f5f1edf50eb2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed9477cc599f5c61b0af9c8f429fc9e5c5338f0c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sotex.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sotex.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

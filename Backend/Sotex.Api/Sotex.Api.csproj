@@ -10,12 +10,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
+    <PackageReference Include="OpenAI" Version="2.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Mapping\" />
+    <Folder Include="Dto\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Infrastructure\" />
+    <Folder Include="Repo\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

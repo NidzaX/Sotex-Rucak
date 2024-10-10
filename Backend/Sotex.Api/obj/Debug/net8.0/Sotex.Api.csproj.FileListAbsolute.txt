@@ -30,3 +30,12 @@ C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\obj\Debug\net8.0\refint\Sot
 C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\obj\Debug\net8.0\Sotex.Api.pdb
 C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\obj\Debug\net8.0\Sotex.Api.genruntimeconfig.cache
 C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\obj\Debug\net8.0\ref\Sotex.Api.dll
+C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\bin\Debug\net8.0\Npgsql.dll
+C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\bin\Debug\net8.0\OpenAI.dll
+C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\bin\Debug\net8.0\System.ClientModel.dll
+C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\bin\Debug\net8.0\System.Memory.Data.dll
+C:\Users\Sotex\Desktop\Sotex-Rucak\Backend\Sotex.Api\obj\Debug\net8.0\Sotex.Api.sourcelink.json
