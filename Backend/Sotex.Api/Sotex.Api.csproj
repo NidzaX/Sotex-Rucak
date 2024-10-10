@@ -23,12 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Mapping\" />
     <Folder Include="Dto\" />
-    <Folder Include="Infrastructure\" />
     <Folder Include="Repo\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
