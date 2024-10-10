@@ -8,7 +8,7 @@
         public DateTime OrderDate { get; set; }
         public DateTime DeliveryDate { get; set; }
         public int TotalPrice { get; set; }
-        public List<OrderedMenuItem> OrderMenuItems { get; set; } 
+        public List<OrderedMenuItem> OrderedMenuItems { get; set; } 
         public bool IsCancelled { get; set; } = false;  
     }
 }

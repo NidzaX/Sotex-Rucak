@@ -1,3 +1,7 @@
+using AutoMapper;
+using Microsoft.Extensions.Configuration;
+using Sotex.Api.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

@@ -21,7 +21,6 @@
     <Folder Include="Controllers\" />
     <Folder Include="Mapping\" />
     <Folder Include="Dto\" />
-    <Folder Include="Interfaces\" />
     <Folder Include="Infrastructure\" />
     <Folder Include="Repo\" />
     <Folder Include="Services\" />
