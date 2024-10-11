@@ -13,7 +13,7 @@ namespace Sotex.Api.Interfaces.Configurations
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder.HasOne(x => x.MenuItem)
-                .WithMany(x => x.sideDishes)
+                .WithMany(x => x.SideDishes)
                 .HasForeignKey(x => x.MenuItemId)
                 .OnDelete(DeleteBehavior.Restrict);
 

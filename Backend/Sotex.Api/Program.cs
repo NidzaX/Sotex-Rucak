@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Sotex.Api.Interfaces;
+using OpenAI.Chat;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

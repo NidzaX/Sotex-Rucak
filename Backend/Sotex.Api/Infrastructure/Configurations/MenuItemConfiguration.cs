@@ -16,7 +16,7 @@ namespace Sotex.Api.Interfaces.Configurations
                 .HasForeignKey(x => x.MenuItemId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(x => x.sideDishes)
+            builder.HasMany(x => x.SideDishes)
                 .WithOne(x => x.MenuItem)
                 .HasForeignKey(x => x.MenuItemId)
                 .OnDelete(DeleteBehavior.Restrict);
