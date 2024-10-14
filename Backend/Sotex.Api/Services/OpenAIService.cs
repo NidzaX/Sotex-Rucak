@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Http;
 using Sotex.Api.Interfaces;
 using Sotex.Api.Model;
 using Newtonsoft.Json;
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace Sotex.Api.Services
 {
@@ -21,39 +25,51 @@ namespace Sotex.Api.Services
             _apiKey = options.Value.ApiKey;
         }
 
-        public async Task<string> ParseImageContentAsync(IFormFile file)
+        public async Task<string> ParseImageFromUrlAsync(string imageUrl, string purpose)
         {
-            if (file == null || file.Length == 0)
+            if (string.IsNullOrEmpty(imageUrl))
             {
-                throw new ArgumentException("No file uploaded");
+                throw new ArgumentException("Image URL cannot be null or empty.");
             }
 
-            var openAiApiUrl = "https://api.openai.com/v1/images/generations"; // Change as needed for the specific endpoint
+            // Craft the request body to send the image URL to OpenAI
+            var requestContent = new
+            {
+                model = "gpt-4o-mini",
+                messages = new[]
+                {
+                    new
+                    {
+                        role = "user",
+                        content = new object[]
+                        {
+                            new { type = "text", text = $"{purpose}: Can you describe the image content as JSON?" },
+                            new { type = "image_url", image_url = new { url = imageUrl } }
+                        }
+                    }
+                },
+                max_tokens = 300
+            };
 
-            using var content = new MultipartFormDataContent();
-            using var stream = new MemoryStream();
-            await file.CopyToAsync(stream);
-            stream.Position = 0; // Reset stream position to the beginning
+            var jsonContent = JsonConvert.SerializeObject(requestContent);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            // Add the image to the content
-            content.Add(new StreamContent(stream), "file", file.FileName);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions")
+            {
+                Content = httpContent
+            };
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
 
-            // Set up the authorization header
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
-
-            // Make the request to OpenAI API
-            var response = await _httpClient.PostAsync(openAiApiUrl, content);
+            var response = await _httpClient.SendAsync(requestMessage);
 
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                dynamic parsedResponse = JsonConvert.DeserializeObject(responseContent);
-                return parsedResponse.choices[0].text; // Adjust based on actual API response structure
+                return responseContent; // This will contain OpenAI's JSON response
             }
             else
             {
-                var errorResponse = await response.Content.ReadAsStringAsync();
-                throw new Exception($"OpenAI API request failed: {errorResponse}");
+                throw new Exception($"Error calling OpenAI API: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
             }
         }
     }

@@ -2,6 +2,6 @@
 {
     public interface IOpenAIService
     {
-        Task<string> ParseImageContentAsync(IFormFile file);
+        Task<string> ParseImageFromUrlAsync(string imageUrl, string purpose);
     }
 }

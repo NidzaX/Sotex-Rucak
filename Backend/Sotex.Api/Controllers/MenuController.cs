@@ -15,17 +15,17 @@ namespace Sotex.Api.Controllers
             _openAIService = openAIService;
         }
 
-        [HttpPost("upload-image")]
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        [HttpPost("upload-image-url")]
+        public async Task<IActionResult> ParseImageFromUrl([FromForm] string imageUrl, [FromForm] string purpose)
         {
             try
             {
-                var parsedContent = await _openAIService.ParseImageContentAsync(file);
-                return Ok(new { message = "Image content parsed successfully", content = parsedContent });
+                var result = await _openAIService.ParseImageFromUrlAsync(imageUrl, purpose);
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message });
+                return BadRequest(new { error = ex.Message });
             }
         }
 
