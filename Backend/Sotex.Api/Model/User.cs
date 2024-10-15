@@ -8,5 +8,6 @@
         public string Email { get; set; }
 
         public List<Menu> Menus { get; set; } = new List<Menu>();
+        public List<Order> Orders { get; set; } = new List<Order>();
     }
 }

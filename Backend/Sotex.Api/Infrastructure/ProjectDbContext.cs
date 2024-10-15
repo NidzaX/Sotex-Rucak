@@ -8,6 +8,7 @@ namespace Sotex.Api.Interfaces
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Menu> Menus { get; set; }
+        public DbSet<Order> Orders { get; set; }
         public ProjectDbContext(DbContextOptions options) : base(options)
         {
             
