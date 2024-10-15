@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Design;
 using Sotex.Api.Interfaces;
 
 namespace Sotex.Api.Controllers
@@ -15,19 +14,23 @@ namespace Sotex.Api.Controllers
             _openAIService = openAIService;
         }
 
-        [HttpPost("upload-image-url")]
-        public async Task<IActionResult> ParseImageFromUrl([FromForm] string imageUrl, [FromForm] string purpose)
+        [HttpPost("parse-image")]
+        public async Task<IActionResult> ParseImage(IFormFile file, [FromForm] string purpose)
         {
+            if (file == null || string.IsNullOrEmpty(purpose))
+            {
+                return BadRequest(new { error = "File and purpose are required." });
+            }
+
             try
             {
-                var result = await _openAIService.ParseImageFromUrlAsync(imageUrl, purpose);
-                return Ok(result);
+                var description = await _openAIService.ParseImageFromFileAsync(file, purpose);
+                return Ok(new { message = "Image parsed successfully", description });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { error = ex.Message });
+                return StatusCode(500, new { error = ex.Message });
             }
         }
-
     }
 }

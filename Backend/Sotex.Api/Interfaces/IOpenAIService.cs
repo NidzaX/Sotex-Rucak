@@ -1,7 +1,9 @@
-﻿namespace Sotex.Api.Interfaces
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Sotex.Api.Interfaces
 {
     public interface IOpenAIService
     {
-        Task<string> ParseImageFromUrlAsync(string imageUrl, string purpose);
+        Task<string> ParseImageFromFileAsync(IFormFile file, string purpose);
     }
 }

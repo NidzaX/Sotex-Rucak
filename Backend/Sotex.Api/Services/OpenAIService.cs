@@ -1,16 +1,13 @@
 ﻿
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-
 using Sotex.Api.Interfaces;
 using Sotex.Api.Model;
 using Newtonsoft.Json;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
+
+using Sotex.Api.Services.DependencyInjection;
+
 
 namespace Sotex.Api.Services
 {
@@ -18,21 +15,28 @@ namespace Sotex.Api.Services
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
-
-        public OpenAIService(HttpClient httpClient, IOptions<OpenAISettings> options)
+        private ResizeImage _resizeImage;
+        public OpenAIService(HttpClient httpClient, IOptions<OpenAISettings> options, ResizeImage resizeImage)
         {
             _httpClient = httpClient;
             _apiKey = options.Value.ApiKey;
+            _resizeImage = resizeImage;
         }
 
-        public async Task<string> ParseImageFromUrlAsync(string imageUrl, string purpose)
+        public async Task<string> ParseImageFromFileAsync(IFormFile file, string purpose)
         {
-            if (string.IsNullOrEmpty(imageUrl))
+            if (file == null || file.Length == 0)
             {
-                throw new ArgumentException("Image URL cannot be null or empty.");
+                throw new ArgumentException("File cannot be null or empty.");
             }
 
-            // Craft the request body to send the image URL to OpenAI
+ 
+            string base64Image;
+            using (var fileStream = file.OpenReadStream())
+            {
+                base64Image = _resizeImage.Resize(fileStream, maxWidth: 800, maxHeight: 800);
+            }
+
             var requestContent = new
             {
                 model = "gpt-4o-mini",
@@ -43,8 +47,15 @@ namespace Sotex.Api.Services
                         role = "user",
                         content = new object[]
                         {
-                            new { type = "text", text = $"{purpose}: Can you describe the image content as JSON?" },
-                            new { type = "image_url", image_url = new { url = imageUrl } }
+                            new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
+                            new
+                            {
+                                type = "image_url",
+                                image_url = new
+                                {
+                                    url = $"data:image/jpeg;base64,{base64Image}" 
+                                }
+                            }
                         }
                     }
                 },
@@ -65,7 +76,18 @@ namespace Sotex.Api.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                return responseContent; // This will contain OpenAI's JSON response
+
+                dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
+                string content = jsonResponse.choices[0].message.content;
+
+                var match = System.Text.RegularExpressions.Regex.Match(content, @"```json(.*?)```", System.Text.RegularExpressions.RegexOptions.Singleline);
+                if (match.Success)
+                {
+                    string extractedJson = match.Groups[1].Value.Trim();
+                    return extractedJson; 
+                }
+
+                return content;
             }
             else
             {

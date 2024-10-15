@@ -6,12 +6,14 @@ using OpenAI.Chat;
 using Sotex.Api.Model;
 using Microsoft.OpenApi.Models;
 using Sotex.Api.Services;
+using Sotex.Api.Services.DependencyInjection;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("OpenAI"));
 builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();
+builder.Services.AddScoped<ResizeImage>();
 
 builder.Services.AddControllers();
 
