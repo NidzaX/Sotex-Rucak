@@ -17,11 +17,11 @@ builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("Ope
 builder.Services.AddHttpClient<IMenuService, MenuService>();
 builder.Services.AddScoped<ResizeImage>();
 
-builder.Services.AddAuthentication().AddGoogle(googleOptions =>
-{
-    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-});
+//builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+//{
+//    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+//    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+//});
 
 builder.Services.AddControllers();
 
@@ -33,6 +33,10 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddDbContext<ProjectDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ProjectDatabase")));
 
+builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IMenuService, MenuService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -43,8 +47,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 app.MapControllers();
 
