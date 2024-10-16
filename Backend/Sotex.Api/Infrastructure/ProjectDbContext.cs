@@ -2,13 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Sotex.Api.Model;
 
-namespace Sotex.Api.Interfaces
+namespace Sotex.Api.Infrastructure
 {
     public class ProjectDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderedMenuItem> OrderedMenuItems { get; set; }
         public ProjectDbContext(DbContextOptions options) : base(options)
         {
             
@@ -19,6 +20,5 @@ namespace Sotex.Api.Interfaces
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProjectDbContext).Assembly);
         }
-
     }
 }

@@ -7,11 +7,11 @@ namespace Sotex.Api.Controllers
     [ApiController]
     public class MenuController : ControllerBase
     {
-        private readonly IOpenAIService _openAIService;
+        private readonly IMenuService _menuService;
 
-        public MenuController(IOpenAIService openAIService)
+        public MenuController(IMenuService openAIService)
         {
-            _openAIService = openAIService;
+            _menuService = openAIService;
         }
 
         [HttpPost("parse-image")]
@@ -24,7 +24,7 @@ namespace Sotex.Api.Controllers
 
             try
             {
-                var description = await _openAIService.ParseImageFromFileAsync(file, purpose);
+                var description = await _menuService.ParseImageFromFileAsync(file, purpose);
                 return Ok(new { message = "Image parsed successfully", description });
             }
             catch (Exception ex)

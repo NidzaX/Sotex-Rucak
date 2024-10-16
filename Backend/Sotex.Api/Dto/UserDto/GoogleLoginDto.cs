@@ -1,6 +1,6 @@
-﻿namespace Sotex.Api.Dto
+﻿namespace Sotex.Api.Dto.UserDto
 {
-    public class GoogleLoginDto 
+    public class GoogleLoginDto
     {
         public string Email { get; set; }
 

@@ -15,6 +15,10 @@ namespace Sotex.Api.Infrastructure.Configurations
                 .WithMany(x => x.Menus)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(x => x.OrderedMenuItems)
+                .WithOne(x => x.Menu)
+                .HasForeignKey(x => x.MenuId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

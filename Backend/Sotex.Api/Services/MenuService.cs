@@ -11,12 +11,12 @@ using Sotex.Api.Services.DependencyInjection;
 
 namespace Sotex.Api.Services
 {
-    public class OpenAIService : IOpenAIService
+    public class MenuService : IMenuService
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
         private ResizeImage _resizeImage;
-        public OpenAIService(HttpClient httpClient, IOptions<OpenAISettings> options, ResizeImage resizeImage)
+        public MenuService(HttpClient httpClient, IOptions<OpenAISettings> options, ResizeImage resizeImage)
         {
             _httpClient = httpClient;
             _apiKey = options.Value.ApiKey;

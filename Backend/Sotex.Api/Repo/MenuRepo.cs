@@ -1,4 +1,4 @@
-﻿using Sotex.Api.Interfaces;
+﻿using Sotex.Api.Infrastructure;
 using Sotex.Api.Model;
 
 namespace Sotex.Api.Repo
@@ -12,16 +12,16 @@ namespace Sotex.Api.Repo
             projectDbContext = context;
         }
 
-        public Menu AddMenu(Menu m)
+        public Menu AddMenu(Menu memnu)
         {
-            Menu retVal = projectDbContext.Menus.Add(m).Entity;
+            Menu retVal = projectDbContext.Menus.Add(memnu).Entity;
             projectDbContext.SaveChanges();
             return retVal;
         }
 
-        public void RemoveMenu(Menu m)
+        public void RemoveMenu(Menu menu)
         {
-            projectDbContext.Menus.Remove(m);
+            projectDbContext.Menus.Remove(menu);
             projectDbContext.SaveChanges();
         }
     }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Sotex.Api.Interfaces;
+using Sotex.Api.Infrastructure;
 
 #nullable disable
 
@@ -61,7 +61,7 @@ namespace Sotex.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Menus");
+                    b.ToTable("Menus", (string)null);
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.User", b =>
@@ -90,7 +90,7 @@ namespace Sotex.Api.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.Menu", b =>

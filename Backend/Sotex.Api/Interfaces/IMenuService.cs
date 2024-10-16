@@ -2,8 +2,9 @@
 
 namespace Sotex.Api.Interfaces
 {
-    public interface IOpenAIService
+    public interface IMenuService
     {
         Task<string> ParseImageFromFileAsync(IFormFile file, string purpose);
+
     }
 }
