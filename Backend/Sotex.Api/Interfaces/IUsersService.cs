@@ -2,7 +2,7 @@
 {
     public interface IUsersService
     {
-        string LoginGoogle(string email, string token);
+        Task<string> LoginGoogleAsync(string email, string token); 
 
     }
 }

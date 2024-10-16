@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Sotex.Api.Interfaces;
+using System.Security.Claims;
+using Sotex.Api.Dto.UserDto;
 
 namespace Sotex.Api.Controllers
 {
@@ -14,6 +18,21 @@ namespace Sotex.Api.Controllers
             _usersService = usersService;
         }
 
-        //users endpoints ....
+        [HttpPost("signin-google")]
+        public async Task<IActionResult> SignInGoogle([FromForm] GoogleLoginDto request) 
+        {
+            
+            var userId = await _usersService.LoginGoogleAsync(request.Email, request.Token);
+
+            
+            if (userId != null)
+            {
+                return Ok(new { UserId = userId });
+            }
+            else
+            {
+                return BadRequest("Login failed.");
+            }
+        }
     }
 }
