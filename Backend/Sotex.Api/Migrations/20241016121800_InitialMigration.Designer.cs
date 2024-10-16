@@ -12,8 +12,8 @@ using Sotex.Api.Infrastructure;
 namespace Sotex.Api.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    [Migration("20241010154121_first-migration")]
-    partial class firstmigration
+    [Migration("20241016121800_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,31 +25,30 @@ namespace Sotex.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Sotex.Api.Model.MenuItem", b =>
+            modelBuilder.Entity("Sotex.Api.Model.Menu", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("MenuItem");
+                    b.ToTable("Menus");
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.Order", b =>
@@ -57,9 +56,6 @@ namespace Sotex.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnType("boolean");
@@ -70,14 +66,20 @@ namespace Sotex.Api.Migrations
                     b.Property<int>("TotalPrice")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.OrderedMenuItem", b =>
@@ -85,44 +87,17 @@ namespace Sotex.Api.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("MenuItemId")
+                    b.Property<Guid>("MenuId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("OrderQuantity")
                         .HasColumnType("integer");
 
-                    b.HasKey("OrderId", "MenuItemId");
+                    b.HasKey("OrderId", "MenuId");
 
-                    b.HasIndex("MenuItemId");
+                    b.HasIndex("MenuId");
 
-                    b.ToTable("OrderedMenuItem");
-                });
-
-            modelBuilder.Entity("Sotex.Api.Model.SideDish", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("MenuItemId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MenuItemId");
-
-                    b.ToTable("SideDish");
+                    b.ToTable("OrderedMenuItems");
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.User", b =>
@@ -132,14 +107,6 @@ namespace Sotex.Api.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FitstName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -159,20 +126,13 @@ namespace Sotex.Api.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Sotex.Api.Model.MenuItem", b =>
-                {
-                    b.HasOne("Sotex.Api.Model.User", null)
-                        .WithMany("MenuItems")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Sotex.Api.Model.Order", b =>
+            modelBuilder.Entity("Sotex.Api.Model.Menu", b =>
                 {
                     b.HasOne("Sotex.Api.Model.User", "User")
-                        .WithMany("Orders")
+                        .WithMany("Menus")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -180,51 +140,47 @@ namespace Sotex.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Sotex.Api.Model.Order", b =>
+                {
+                    b.HasOne("Sotex.Api.Model.User", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Sotex.Api.Model.OrderedMenuItem", b =>
                 {
-                    b.HasOne("Sotex.Api.Model.MenuItem", "MenuItem")
+                    b.HasOne("Sotex.Api.Model.Menu", "Menu")
                         .WithMany("OrderedMenuItems")
-                        .HasForeignKey("MenuItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("MenuId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Sotex.Api.Model.Order", "Order")
-                        .WithMany("OrderedMenuItems")
+                        .WithMany("OrderedMenuItem")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("MenuItem");
+                    b.Navigation("Menu");
 
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Sotex.Api.Model.SideDish", b =>
-                {
-                    b.HasOne("Sotex.Api.Model.MenuItem", "MenuItem")
-                        .WithMany("sideDishes")
-                        .HasForeignKey("MenuItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("MenuItem");
-                });
-
-            modelBuilder.Entity("Sotex.Api.Model.MenuItem", b =>
+            modelBuilder.Entity("Sotex.Api.Model.Menu", b =>
                 {
                     b.Navigation("OrderedMenuItems");
-
-                    b.Navigation("sideDishes");
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.Order", b =>
                 {
-                    b.Navigation("OrderedMenuItems");
+                    b.Navigation("OrderedMenuItem");
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.User", b =>
                 {
-                    b.Navigation("MenuItems");
+                    b.Navigation("Menus");
 
                     b.Navigation("Orders");
                 });

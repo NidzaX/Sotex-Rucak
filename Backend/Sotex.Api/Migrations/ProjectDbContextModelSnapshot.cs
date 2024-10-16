@@ -24,34 +24,18 @@ namespace Sotex.Api.Migrations
 
             modelBuilder.Entity("Sotex.Api.Model.Menu", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CustomerMessage")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("MenuDay")
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OrderInfo")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal?>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<int?>("Type")
+                    b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("UserId")
@@ -61,7 +45,56 @@ namespace Sotex.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Menus", (string)null);
+                    b.ToTable("Menus");
+                });
+
+            modelBuilder.Entity("Sotex.Api.Model.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("TotalPrice")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Sotex.Api.Model.OrderedMenuItem", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("MenuId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("OrderQuantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("OrderId", "MenuId");
+
+                    b.HasIndex("MenuId");
+
+                    b.ToTable("OrderedMenuItems");
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.User", b =>
@@ -90,7 +123,7 @@ namespace Sotex.Api.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.Menu", b =>
@@ -104,9 +137,49 @@ namespace Sotex.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Sotex.Api.Model.Order", b =>
+                {
+                    b.HasOne("Sotex.Api.Model.User", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Sotex.Api.Model.OrderedMenuItem", b =>
+                {
+                    b.HasOne("Sotex.Api.Model.Menu", "Menu")
+                        .WithMany("OrderedMenuItems")
+                        .HasForeignKey("MenuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sotex.Api.Model.Order", "Order")
+                        .WithMany("OrderedMenuItem")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Menu");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Sotex.Api.Model.Menu", b =>
+                {
+                    b.Navigation("OrderedMenuItems");
+                });
+
+            modelBuilder.Entity("Sotex.Api.Model.Order", b =>
+                {
+                    b.Navigation("OrderedMenuItem");
+                });
+
             modelBuilder.Entity("Sotex.Api.Model.User", b =>
                 {
                     b.Navigation("Menus");
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }
