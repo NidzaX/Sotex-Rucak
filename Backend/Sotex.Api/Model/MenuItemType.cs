@@ -2,7 +2,7 @@
 {
     public enum MenuItemType
     {
-        MainDish,
+        Dish,
         SideDish
     }
 }

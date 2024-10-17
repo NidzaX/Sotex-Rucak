@@ -6,6 +6,5 @@ namespace Sotex.Api.Dto.MenuDto
     {
         public string Name { get; set; }
         public decimal? Price { get; set; }
-        public MenuItemType Type { get; set; }
     }
 }

@@ -6,7 +6,6 @@ namespace Sotex.Api.Dto.OrderDto
     {
         public string Name { get; set; }
         public int? Price { get; set; }
-        public MenuItemType Type { get; set; }
         public List<OrderMenuItemQuantityTemp> MenuItems { get; set; }
     }
 }

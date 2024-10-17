@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Sotex.Api.Model;
 
 namespace Sotex.Api.Interfaces
 {
     public interface IMenuService
     {
-        Task<string> ParseImageFromFileAsync(IFormFile file, string purpose);
+        Task<Menu> ParseAndSaveMenuFromFileAsync(IFormFile file, string purpose);
 
     }
 }

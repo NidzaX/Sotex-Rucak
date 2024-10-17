@@ -9,6 +9,7 @@ using Sotex.Api.Services;
 using Sotex.Api.Services.DependencyInjection;
 using Sotex.Api.Infrastructure;
 using Microsoft.AspNetCore.Authentication.Google;
+using Sotex.Api.Repo;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +33,11 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ProjectDatabase")));
+
+builder.Services.AddScoped<UserRepo>();
+builder.Services.AddScoped<MenuRepo>();
+builder.Services.AddScoped<OrdersRepo>();
+builder.Services.AddScoped<OrderedMenuItemsRepo>();
 
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IMenuService, MenuService>();

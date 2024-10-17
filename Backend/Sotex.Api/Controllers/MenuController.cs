@@ -14,8 +14,8 @@ namespace Sotex.Api.Controllers
             _menuService = openAIService;
         }
 
-        [HttpPost("parse-image")]
-        public async Task<IActionResult> ParseImage(IFormFile file, [FromForm] string purpose)
+        [HttpPost("parse-and-save-menu")]
+        public async Task<IActionResult> ParseAndSaveMenu(IFormFile file, [FromForm] string purpose)
         {
             if (file == null || string.IsNullOrEmpty(purpose))
             {
@@ -24,8 +24,8 @@ namespace Sotex.Api.Controllers
 
             try
             {
-                var description = await _menuService.ParseImageFromFileAsync(file, purpose);
-                return Ok(new { message = "Image parsed successfully", description });
+                var menu = await _menuService.ParseAndSaveMenuFromFileAsync(file, purpose);
+                return Ok(new { message = "Menu saved successfully", menu });
             }
             catch (Exception ex)
             {

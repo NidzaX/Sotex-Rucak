@@ -11,7 +11,7 @@ namespace Sotex.Api.Infrastructure.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.HasMany(x => x.OrderedMenuItem)
+            builder.HasMany(x => x.OrderedMenuItems)
                 .WithOne()
                 .HasForeignKey(x => x.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);

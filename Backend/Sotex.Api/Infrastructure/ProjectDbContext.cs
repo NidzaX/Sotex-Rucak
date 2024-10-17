@@ -8,6 +8,8 @@ namespace Sotex.Api.Infrastructure
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Menu> Menus { get; set; }
+        public DbSet<Dish> Dishes { get; set; }
+        public DbSet<SideDish> SideDishes { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderedMenuItem> OrderedMenuItems { get; set; }
         public ProjectDbContext(DbContextOptions options) : base(options)
