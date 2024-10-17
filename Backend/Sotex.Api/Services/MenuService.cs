@@ -117,28 +117,22 @@ namespace Sotex.Api.Services
                 base64Image = _resizeImage.Resize(fileStream, maxWidth: 800, maxHeight: 800);
             }
 
+            // Request to OpenAI API
             var requestContent = new
             {
                 model = "gpt-4o-mini",
                 messages = new[]
                 {
-            new
-            {
-                role = "user",
-                content = new object[]
-                {
-                    new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
                     new
                     {
-                        type = "image_url",
-                        image_url = new
+                        role = "user",
+                        content = new object[]
                         {
-                            url = $"data:image/jpeg;base64,{base64Image}"
+                            new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
+                            new { type = "image_url", image_url = new { url = $"data:image/jpeg;base64,{base64Image}" } }
                         }
                     }
-                }
-            }
-        },
+                },
                 max_tokens = 300
             };
 
@@ -158,35 +152,25 @@ namespace Sotex.Api.Services
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var jsonResponse = JsonConvert.DeserializeObject<ResponseDto>(responseContent);
 
-                // Extract the content from the choices
-                var content = jsonResponse.choices[0].message.content.ToString();
+                // Extract the JSON content from the response
+                var content = jsonResponse.choices[0].message.content.ToString().Trim('`');
 
-                // Remove the markdown formatting
-                content = content.TrimStart('`').TrimEnd('`');
-
-                // Deserialize the inner JSON content directly into your existing models
+                // Deserialize the content into AddMenuDto
                 var menuData = JsonConvert.DeserializeObject<AddMenuDto>(content);
 
-                // Convert prices from string to decimal
-                menuData.Dishes = menuData.Dishes.Select(dish => new AddDishDto
-                {
-                    Name = dish.Name,
-                    Price = dish.Price  
-                }).ToList();
+                // Map AddMenuDto to your database models
                 var menuDto = new Menu
                 {
-                    Name = menuData.Day, 
+                    Name = menuData.Day,  // Set menu name as "day"
                     Dishes = menuData.Dishes.Select(dish => new Dish
                     {
                         Name = dish.Name,
-                        Price = decimal.Parse(dish.Price.Replace(",", "."), CultureInfo.InvariantCulture)
+                        Price = decimal.Parse(dish.Price.Replace(",", "."), CultureInfo.InvariantCulture)  // Convert to decimal
                     }).ToList(),
-                    SideDishes = menuData.SideDishes.Select(side => new SideDish
-                    {
-                        Name = side
-                    }).ToList()
+                    SideDishes = menuData.SideDishes.Select(side => new SideDish { Name = side }).ToList()
                 };
 
+                // Save to the database
                 var savedMenu = await _menuRepo.AddMenuAsync(menuDto);
                 return savedMenu;
             }
