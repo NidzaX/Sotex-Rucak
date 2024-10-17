@@ -9,7 +9,7 @@ namespace Sotex.Api.Mapping
         public MappingProfile()
         {
             CreateMap<Menu, AddMenuDto>().ReverseMap();
-            CreateMap<Dish, AddDishDto>().ReverseMap();
+            CreateMap<Dish, DishDto>().ReverseMap();
         }
     }
 }

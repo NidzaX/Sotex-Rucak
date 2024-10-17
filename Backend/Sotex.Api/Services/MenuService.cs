@@ -123,16 +123,16 @@ namespace Sotex.Api.Services
                 model = "gpt-4o-mini",
                 messages = new[]
                 {
-                    new
-                    {
-                        role = "user",
-                        content = new object[]
-                        {
-                            new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
-                            new { type = "image_url", image_url = new { url = $"data:image/jpeg;base64,{base64Image}" } }
-                        }
-                    }
-                },
+            new
+            {
+                role = "user",
+                content = new object[]
+                {
+                    new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
+                    new { type = "image_url", image_url = new { url = $"data:image/jpeg;base64,{base64Image}" } }
+                }
+            }
+        },
                 max_tokens = 300
             };
 
@@ -162,12 +162,12 @@ namespace Sotex.Api.Services
                 var menuDto = new Menu
                 {
                     Name = menuData.Day,  // Set menu name as "day"
-                    Dishes = menuData.Dishes.Select(dish => new Dish
+                    Dishes = menuData.Menu.Dishes.Select(dish => new Dish
                     {
                         Name = dish.Name,
                         Price = decimal.Parse(dish.Price.Replace(",", "."), CultureInfo.InvariantCulture)  // Convert to decimal
                     }).ToList(),
-                    SideDishes = menuData.SideDishes.Select(side => new SideDish { Name = side }).ToList()
+                    SideDishes = menuData.Menu.Sides.Select(side => new SideDish { Name = side }).ToList()
                 };
 
                 // Save to the database
@@ -179,5 +179,6 @@ namespace Sotex.Api.Services
                 throw new Exception($"Error calling OpenAI API: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
             }
         }
+
     }
 }

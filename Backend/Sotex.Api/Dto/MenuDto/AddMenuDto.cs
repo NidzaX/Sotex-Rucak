@@ -6,8 +6,6 @@ namespace Sotex.Api.Dto.MenuDto
     public class AddMenuDto
     {
         public string Day { get; set; }
-
-        public List<AddDishDto> Dishes { get; set; } = new List<AddDishDto>();
-        public List<string> SideDishes { get; set; } = new List<string>();
+        public MenuDetailsDto Menu { get; set; }
     }
 }
