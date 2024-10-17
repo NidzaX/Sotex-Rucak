@@ -12,6 +12,7 @@ using Sotex.Api.Repo;
 using AutoMapper;
 using System.Globalization;
 using Sotex.Api.Dto.JsonResponseDto;
+using System.Text.RegularExpressions;
 
 
 namespace Sotex.Api.Services
@@ -117,26 +118,27 @@ namespace Sotex.Api.Services
                 base64Image = _resizeImage.Resize(fileStream, maxWidth: 800, maxHeight: 800);
             }
 
-            // Request to OpenAI API
+            // Request to OpenAI APIs
             var requestContent = new
             {
                 model = "gpt-4o-mini",
-                messages = new[]
-                {
-            new
-            {
-                role = "user",
-                content = new object[]
-                {
-                    new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
-                    new { type = "image_url", image_url = new { url = $"data:image/jpeg;base64,{base64Image}" } }
-                }
-            }
-        },
+                messages = new[] {
+                    new {
+                        role = "user",
+                        content = new object[] {
+                            new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
+                            new { type = "image_url", image_url = new { url = $"data:image/jpeg;base64,{base64Image}" } }
+                        }
+                    }
+                },
                 max_tokens = 300
             };
 
             var jsonContent = JsonConvert.SerializeObject(requestContent);
+
+            //log
+            Console.WriteLine("Request Payload: " + jsonContent);
+
             var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions")
@@ -153,32 +155,48 @@ namespace Sotex.Api.Services
                 var jsonResponse = JsonConvert.DeserializeObject<ResponseDto>(responseContent);
 
                 // Extract the JSON content from the response
-                var content = jsonResponse.choices[0].message.content.ToString().Trim('`');
+                var content = jsonResponse.choices[0].message.content.ToString().Trim();
 
-                // Deserialize the content into AddMenuDto
-                var menuData = JsonConvert.DeserializeObject<AddMenuDto>(content);
+                // Use Regex to extract the JSON part
+                var jsonRegex = new Regex(@"\{.*\}", RegexOptions.Singleline);
+                var match = jsonRegex.Match(content);
 
-                // Map AddMenuDto to your database models
-                var menuDto = new Menu
+                if (match.Success)
                 {
-                    Name = menuData.Day,  // Set menu name as "day"
-                    Dishes = menuData.Menu.Dishes.Select(dish => new Dish
-                    {
-                        Name = dish.Name,
-                        Price = decimal.Parse(dish.Price.Replace(",", "."), CultureInfo.InvariantCulture)  // Convert to decimal
-                    }).ToList(),
-                    SideDishes = menuData.Menu.Sides.Select(side => new SideDish { Name = side }).ToList()
-                };
+                    string jsonPart = match.Value;
 
-                // Save to the database
-                var savedMenu = await _menuRepo.AddMenuAsync(menuDto);
-                return savedMenu;
+                    // Log extracted JSON part
+                    Console.WriteLine(jsonPart);
+
+                    // Deserialize the content into AddMenuDto
+                    var menuData = JsonConvert.DeserializeObject<AddMenuDto>(jsonPart);
+
+                    // Map AddMenuDto to your database models
+                    var menuDto = new Menu
+                    {
+                        Name = menuData.Day,  // Set menu name as "day"
+                        Dishes = menuData.Menu.Dishes.Select(dish => new Dish
+                        {
+                            Name = dish.Name,
+                            Price = decimal.Parse(dish.Price.Replace(",", "."), CultureInfo.InvariantCulture)  // Convert to decimal
+                        }).ToList(),
+                        SideDishes = menuData.Menu.Sides.Select(side => new SideDish { Name = side }).ToList()
+                    };
+
+                    // Save to the database
+                    var savedMenu = await _menuRepo.AddMenuAsync(menuDto);
+                    return savedMenu;
+                }
+                else
+                {
+                    throw new Exception("No JSON content found in the response.");
+                }
             }
             else
             {
+                var errorContent = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Error calling OpenAI API: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
             }
         }
-
     }
 }
