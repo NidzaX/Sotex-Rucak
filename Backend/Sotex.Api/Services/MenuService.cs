@@ -181,6 +181,11 @@ namespace Sotex.Api.Services
                         }).ToList(),
                         SideDishes = menuData.Menu.Sides.Select(side => new SideDish { Name = side }).ToList(),
                         SpecialOffer = menuData.Menu.SpecialOffer,
+                        OrderInfo = new OrderInfo
+                        {
+                            Phone = menuData.Menu.OrderInfo.Phone,
+                            Note = menuData.Menu.OrderInfo.Note
+                        }
                     };
 
                     // Save to database
