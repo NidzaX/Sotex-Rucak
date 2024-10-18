@@ -11,7 +11,7 @@ namespace Sotex.Api.Dto.MenuDto
         [JsonProperty("dishes")]
         public List<DishDto> Dishes { get; set; }
 
-        [JsonProperty("sides")]
+        [JsonProperty("side_dishes")]
         public List<string> Sides { get; set; }
 
         [JsonProperty("special_offer")]

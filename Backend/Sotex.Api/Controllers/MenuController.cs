@@ -24,7 +24,15 @@ namespace Sotex.Api.Controllers
 
             try
             {
-                var menu = await _menuService.ParseAndSaveMenuFromFileAsync(file, purpose);
+                var userIdClaim = User.FindFirst("sub"); // I need to modify this using JWT.io when the user is logged in.....
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { error = "User is not authenticated." });
+                }
+
+                var userId = Guid.Parse(userIdClaim.Value); 
+
+                var menu = await _menuService.ParseAndSaveMenuFromFileAsync(file, purpose, userId);
                 return Ok(new { message = "Menu saved successfully", menu });
             }
             catch (Exception ex)
@@ -32,5 +40,6 @@ namespace Sotex.Api.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
     }
 }
