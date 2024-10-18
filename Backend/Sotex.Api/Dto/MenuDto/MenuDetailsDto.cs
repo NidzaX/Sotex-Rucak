@@ -6,10 +6,10 @@ namespace Sotex.Api.Dto.MenuDto
     {
         public List<DishDto> Dishes { get; set; }  
         public List<string> Sides { get; set; } 
-        public string SpecialOffer { get; set; }  
-        public string AdditionalInfo { get; set; }
+        public string SpecialOffer { get; set; }
 
-        [JsonProperty("contact")]
-        public string ContactInfo { get; set; }  
+        [JsonProperty("order_info")] 
+        public OrderInfoDto OrderInfo { get; set; } 
+
     }
 }
