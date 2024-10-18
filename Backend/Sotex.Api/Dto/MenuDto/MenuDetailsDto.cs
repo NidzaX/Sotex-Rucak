@@ -6,6 +6,6 @@
         public List<string> Sides { get; set; } 
         public string SpecialOffer { get; set; }  
         public string AdditionalInfo { get; set; } 
-        public OrderInfoDto ContactInfo { get; set; }  
+        public string ContactInfo { get; set; }  
     }
 }
