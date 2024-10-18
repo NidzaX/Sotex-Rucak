@@ -6,7 +6,9 @@ namespace Sotex.Api.Model
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-
+        public string SpecialOffer { get; set; }
+        public string AdditionalInfo { get; set; }
+        public ContactInfo ContactInfo { get; set; }
         public Guid UserId { get; set; }
         public User User { get; set; }
 

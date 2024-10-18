@@ -1,8 +1,12 @@
-﻿namespace Sotex.Api.Dto.MenuDto
+﻿using Newtonsoft.Json;
+
+namespace Sotex.Api.Dto.MenuDto
 {
     public class DishDto
     {
-        public string Name { get; set; }
-        public string Price { get; set; }
+        [JsonProperty("dish")]
+        public string Name { get; set; }  
+
+        public string Price { get; set; }  
     }
 }

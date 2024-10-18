@@ -2,8 +2,10 @@
 {
     public class MenuDetailsDto
     {
-        public List<DishDto> Dishes { get; set; }
-        public List<string> Sides { get; set; }
-        public OrderInfoDto OrderInfo { get; set; }
+        public List<DishDto> Dishes { get; set; }  
+        public List<string> Sides { get; set; } 
+        public string SpecialOffer { get; set; }  
+        public string AdditionalInfo { get; set; } 
+        public OrderInfoDto ContactInfo { get; set; }  
     }
 }
