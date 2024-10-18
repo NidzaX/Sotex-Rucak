@@ -29,6 +29,11 @@ namespace Sotex.Api.Infrastructure.Configurations
                 .WithOne(x => x.Menu)
                 .HasForeignKey(x => x.MenuId);
 
+            builder.OwnsOne(x => x.OrderInfo, oi =>
+            {
+                oi.Property(o => o.Phone).HasColumnName("OrderPhone");
+                oi.Property(o => o.Note).HasColumnName("OrderNote");
+            });
         }
     }
 }

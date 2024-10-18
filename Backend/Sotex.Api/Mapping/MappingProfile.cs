@@ -8,9 +8,9 @@ namespace Sotex.Api.Mapping
     {
         public MappingProfile()
         {
-           
+
             CreateMap<Menu, AddMenuDto>()
-                .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Name)) 
+                .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Name))
                 .ReverseMap();
 
             CreateMap<MenuDetailsDto, Menu>()
@@ -20,10 +20,12 @@ namespace Sotex.Api.Mapping
                            opt => opt.MapFrom(src => src.Dishes))
                 .ForMember(dest => dest.SpecialOffer,
                            opt => opt.MapFrom(src => src.SpecialOffer))
-                .ForMember(dest => dest.AdditionalInfo,
-                           opt => opt.MapFrom(src => src.AdditionalInfo))
-                .ForMember(dest => dest.ContactInfo,
-                           opt => opt.MapFrom(src => src.ContactInfo)) 
+                .ForMember(dest => dest.OrderInfo,
+                           opt => opt.MapFrom(src => new OrderInfo
+                           {
+                               Phone = src.OrderInfo.Phone,
+                               Note = src.OrderInfo.Note
+                           }))
                 .ReverseMap();
 
             CreateMap<Dish, DishDto>().ReverseMap();

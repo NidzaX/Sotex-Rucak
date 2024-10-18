@@ -180,9 +180,7 @@ namespace Sotex.Api.Services
                             Price = decimal.Parse(dish.Price.Replace(",", "."), CultureInfo.InvariantCulture)
                         }).ToList(),
                         SideDishes = menuData.Menu.Sides.Select(side => new SideDish { Name = side }).ToList(),
-                        ContactInfo = menuData.Menu.ContactInfo,
                         SpecialOffer = menuData.Menu.SpecialOffer,
-                        AdditionalInfo = menuData.Menu.AdditionalInfo
                     };
 
                     // Save to database
