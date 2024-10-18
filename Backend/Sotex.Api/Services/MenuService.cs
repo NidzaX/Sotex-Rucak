@@ -117,7 +117,7 @@ namespace Sotex.Api.Services
                     // Deserialize JSON into AddMenuDto
                     var menuData = JsonConvert.DeserializeObject<AddMenuDto>(jsonPart);
 
-                    if (menuData == null || menuData.Menu == null)
+                    if (menuData == null)
                     {
                         throw new Exception("Failed to deserialize menu data or menu is null.");
                     }
@@ -125,17 +125,17 @@ namespace Sotex.Api.Services
                     var menuDto = new Menu
                     {
                         Name = menuData.Day,
-                        Dishes = menuData.Menu.Dishes.Select(dish => new Dish
+                        Dishes = menuData.Dishes.Select(dish => new Dish
                         {
                             Name = dish.Name,
-                            Price = decimal.Parse(dish.Price.Replace(",", "."), CultureInfo.InvariantCulture)
-                        }).ToList() ?? new List<Dish>(),
-                        SideDishes = menuData.Menu.Sides?.Select(side => new SideDish { Name = side }).ToList() ?? new List<SideDish>(), 
-                        SpecialOffer = menuData.Menu.SpecialOffer,
+                            Price = decimal.Parse(dish.Price.ToString(), CultureInfo.InvariantCulture)
+                        }).ToList(),
+                        SideDishes = menuData.Sides.Select(side => new SideDish { Name = side }).ToList(),
+                        SpecialOffer = menuData.SpecialOffer,
                         OrderInfo = new OrderInfo
                         {
-                            Phone = menuData.Menu.OrderInfo?.Phone,
-                            Note = menuData.Menu.OrderInfo?.Note,
+                            Phone = menuData.OrderInfo.Phone,
+                            Note = menuData.OrderInfo.Note,
                         }
                     };
 
