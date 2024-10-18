@@ -33,78 +33,6 @@ namespace Sotex.Api.Services
             _menuRepo = menuRepo;
         }
 
-        //public async Task<string> ParseImageFromFileAsync(IFormFile file, string purpose)
-        //{
-        //    if (file == null || file.Length == 0)
-        //    {
-        //        throw new ArgumentException("File cannot be null or empty.");
-        //    }
-
-
-        //    string base64Image;
-        //    using (var fileStream = file.OpenReadStream())
-        //    {
-        //        base64Image = _resizeImage.Resize(fileStream, maxWidth: 800, maxHeight: 800);
-        //    }
-
-        //    var requestContent = new
-        //    {
-        //        model = "gpt-4o-mini",
-        //        messages = new[]
-        //        {
-        //            new
-        //            {
-        //                role = "user",
-        //                content = new object[]
-        //                {
-        //                    new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
-        //                    new
-        //                    {
-        //                        type = "image_url",
-        //                        image_url = new
-        //                        {
-        //                            url = $"data:image/jpeg;base64,{base64Image}" 
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        },
-        //        max_tokens = 300
-        //    };
-
-        //    var jsonContent = JsonConvert.SerializeObject(requestContent);
-        //    var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-        //    var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions")
-        //    {
-        //        Content = httpContent
-        //    };
-        //    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
-
-        //    var response = await _httpClient.SendAsync(requestMessage);
-
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var responseContent = await response.Content.ReadAsStringAsync();
-
-        //        dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
-        //        string content = jsonResponse.choices[0].message.content;
-
-        //        var match = System.Text.RegularExpressions.Regex.Match(content, @"```json(.*?)```", System.Text.RegularExpressions.RegexOptions.Singleline);
-        //        if (match.Success)
-        //        {
-        //            string extractedJson = match.Groups[1].Value.Trim();
-        //            return extractedJson; 
-        //        }
-
-        //        return content;
-        //    }
-        //    else
-        //    {
-        //        throw new Exception($"Error calling OpenAI API: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
-        //    }
-        //}
-
         public async Task<Menu> ParseAndSaveMenuFromFileAsync(IFormFile file, string purpose)
         {
             if (file == null || file.Length == 0)
@@ -119,7 +47,7 @@ namespace Sotex.Api.Services
                 base64Image = _resizeImage.Resize(fileStream, maxWidth: 800, maxHeight: 800);
             }
 
-            // Prepare request for OpenAI API
+            // Prepare request for OpenAI API with a specific prompt for consistent JSON structure
             var requestContent = new
             {
                 model = "gpt-4o-mini",
@@ -130,7 +58,26 @@ namespace Sotex.Api.Services
                 role = "user",
                 content = new object[]
                 {
-                    new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
+                    new
+                    {
+                        type = "text",
+                        text = $"{purpose}: Please provide the content of the image as JSON in the following structure: " +
+                        "{" +
+                        "  \"day\": \"string\"," +
+                        "  \"dishes\": [" +
+                        "    {" +
+                        "      \"name\": \"string\"," +
+                        "      \"price\": number" +
+                        "    }" +
+                        "  ]," +
+                        "  \"side_dishes\": [\"string\"]," +
+                        "  \"special_offer\": \"string\"," +
+                        "  \"order_info\": {" +
+                        "    \"phone\": \"string\"" +
+                        "    \"note\": \"string\"" +
+                        "  }" +
+                        "}"
+                    },
                     new { type = "image_url", image_url = new { url = $"data:image/jpeg;base64,{base64Image}" } }
                 }
             }
@@ -170,6 +117,10 @@ namespace Sotex.Api.Services
                     // Deserialize JSON into AddMenuDto
                     var menuData = JsonConvert.DeserializeObject<AddMenuDto>(jsonPart);
 
+                    if (menuData == null || menuData.Menu == null)
+                    {
+                        throw new Exception("Failed to deserialize menu data or menu is null.");
+                    }
                     // Map to database model
                     var menuDto = new Menu
                     {
@@ -178,13 +129,13 @@ namespace Sotex.Api.Services
                         {
                             Name = dish.Name,
                             Price = decimal.Parse(dish.Price.Replace(",", "."), CultureInfo.InvariantCulture)
-                        }).ToList(),
-                        SideDishes = menuData.Menu.Sides.Select(side => new SideDish { Name = side }).ToList(),
+                        }).ToList() ?? new List<Dish>(),
+                        SideDishes = menuData.Menu.Sides?.Select(side => new SideDish { Name = side }).ToList() ?? new List<SideDish>(), 
                         SpecialOffer = menuData.Menu.SpecialOffer,
                         OrderInfo = new OrderInfo
                         {
-                            Phone = menuData.Menu.OrderInfo.Phone,
-                            Note = menuData.Menu.OrderInfo.Note
+                            Phone = menuData.Menu.OrderInfo?.Phone,
+                            Note = menuData.Menu.OrderInfo?.Note,
                         }
                     };
 
@@ -203,6 +154,7 @@ namespace Sotex.Api.Services
                 throw new Exception($"Error calling OpenAI API: {response.StatusCode} - {errorContent}");
             }
         }
+
 
     }
 }
