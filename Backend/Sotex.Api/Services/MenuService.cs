@@ -112,41 +112,43 @@ namespace Sotex.Api.Services
                 throw new ArgumentException("File cannot be null or empty.");
             }
 
+            // Convert the image to base64
             string base64Image;
             using (var fileStream = file.OpenReadStream())
             {
                 base64Image = _resizeImage.Resize(fileStream, maxWidth: 800, maxHeight: 800);
             }
 
-            // Request to OpenAI APIs
+            // Prepare request for OpenAI API
             var requestContent = new
             {
                 model = "gpt-4o-mini",
-                messages = new[] {
-                    new {
-                        role = "user",
-                        content = new object[] {
-                            new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
-                            new { type = "image_url", image_url = new { url = $"data:image/jpeg;base64,{base64Image}" } }
-                        }
-                    }
-                },
+                messages = new[]
+                {
+            new
+            {
+                role = "user",
+                content = new object[]
+                {
+                    new { type = "text", text = $"{purpose}: Can you describe the content of the image as JSON?" },
+                    new { type = "image_url", image_url = new { url = $"data:image/jpeg;base64,{base64Image}" } }
+                }
+            }
+        },
                 max_tokens = 300
             };
 
             var jsonContent = JsonConvert.SerializeObject(requestContent);
-
-            //log
-            Console.WriteLine("Request Payload: " + jsonContent);
+            Console.WriteLine("Request Payload: " + jsonContent);  // Log the payload
 
             var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions")
             {
                 Content = httpContent
             };
             requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
 
+            // Send request to OpenAI API
             var response = await _httpClient.SendAsync(requestMessage);
 
             if (response.IsSuccessStatusCode)
@@ -154,36 +156,36 @@ namespace Sotex.Api.Services
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var jsonResponse = JsonConvert.DeserializeObject<ResponseDto>(responseContent);
 
-                // Extract the JSON content from the response
                 var content = jsonResponse.choices[0].message.content.ToString().Trim();
 
-                // Use Regex to extract the JSON part
+                // Extract JSON from the response using regex
                 var jsonRegex = new Regex(@"\{.*\}", RegexOptions.Singleline);
                 var match = jsonRegex.Match(content);
 
                 if (match.Success)
                 {
                     string jsonPart = match.Value;
+                    Console.WriteLine("Extracted JSON: " + jsonPart);  // Log extracted JSON
 
-                    // Log extracted JSON part
-                    Console.WriteLine(jsonPart);
-
-                    // Deserialize the content into AddMenuDto
+                    // Deserialize JSON into AddMenuDto
                     var menuData = JsonConvert.DeserializeObject<AddMenuDto>(jsonPart);
 
-                    // Map AddMenuDto to your database models
+                    // Map to database model
                     var menuDto = new Menu
                     {
-                        Name = menuData.Day,  // Set menu name as "day"
+                        Name = menuData.Day,
                         Dishes = menuData.Menu.Dishes.Select(dish => new Dish
                         {
                             Name = dish.Name,
-                            Price = decimal.Parse(dish.Price.Replace(",", "."), CultureInfo.InvariantCulture)  // Convert to decimal
+                            Price = decimal.Parse(dish.Price.Replace(",", "."), CultureInfo.InvariantCulture)
                         }).ToList(),
-                        SideDishes = menuData.Menu.Sides.Select(side => new SideDish { Name = side }).ToList()
+                        SideDishes = menuData.Menu.Sides.Select(side => new SideDish { Name = side }).ToList(),
+                        ContactInfo = menuData.Menu.ContactInfo,
+                        SpecialOffer = menuData.Menu.SpecialOffer,
+                        AdditionalInfo = menuData.Menu.AdditionalInfo
                     };
 
-                    // Save to the database
+                    // Save to database
                     var savedMenu = await _menuRepo.AddMenuAsync(menuDto);
                     return savedMenu;
                 }
@@ -195,8 +197,9 @@ namespace Sotex.Api.Services
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Error calling OpenAI API: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+                throw new Exception($"Error calling OpenAI API: {response.StatusCode} - {errorContent}");
             }
         }
+
     }
 }
