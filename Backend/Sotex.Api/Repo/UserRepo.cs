@@ -1,4 +1,4 @@
-﻿
+﻿using Microsoft.EntityFrameworkCore;
 using Sotex.Api.Infrastructure;
 using Sotex.Api.Model;
 
@@ -6,33 +6,33 @@ namespace Sotex.Api.Repo
 {
     public class UserRepo
     {
-        private ProjectDbContext projectDbContext;
+        private readonly ProjectDbContext _projectDbContext;
 
         public UserRepo(ProjectDbContext context)
         {
-            projectDbContext = context;
+            _projectDbContext = context;
         }
 
-        public User AddUser(User user)
+        public async Task<User> AddUserAsync(User user)
         {
-            User retVal = projectDbContext.Users.Add(user).Entity;
-            projectDbContext.SaveChanges();
-            return retVal;
+            var retVal = await _projectDbContext.Users.AddAsync(user);
+            await _projectDbContext.SaveChangesAsync();
+            return retVal.Entity;
         }
 
-        public User FindUserByUsername(string username)
+        public async Task<User> FindUserByUsernameAsync(string username)
         {
-            return projectDbContext.Users.FirstOrDefault(x => x.Username == username);
-        }
-        
-        public User FindByEmail(string email)
-        {
-            return projectDbContext.Users.FirstOrDefault(x => x.Email == email);
+            return await _projectDbContext.Users.FirstOrDefaultAsync(x => x.Username == username);
         }
 
-        public User Find(Guid id)
+        public async Task<User> FindByEmailAsync(string email)
         {
-            return projectDbContext.Users.Find(id);
+            return await _projectDbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+        }
+
+        public async Task<User> FindAsync(Guid id)
+        {
+            return await _projectDbContext.Users.FindAsync(id);
         }
     }
 }

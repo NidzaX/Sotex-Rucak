@@ -18,20 +18,32 @@ namespace Sotex.Api.Controllers
             _usersService = usersService;
         }
 
-        [HttpPost("signin-google")]
-        public async Task<IActionResult> SignInGoogle([FromForm] GoogleLoginDto request) 
+        [HttpPost("register-google")]
+        public async Task<IActionResult> RegisterGoogleUser(GoogleRegisterDto dto)
         {
-            
-            var userId = await _usersService.LoginGoogleAsync(request.Email, request.Token);
+            try
+            {
+                var user = await _usersService.RegisterGoogleUserAsync(dto);
+                return Ok(user);
 
-            
-            if (userId != null)
+            }catch (Exception ex)
             {
-                return Ok(new { UserId = userId });
+                return BadRequest(ex.Message);
             }
-            else
+        }
+
+
+        [HttpPost("signin-google")]
+        public async Task<IActionResult> SignInGoogle([FromForm] GoogleLoginDto dto) 
+        {
+            try
             {
-                return BadRequest("Login failed.");
+                var token = await _usersService.LoginGoogleAsync(dto.Email, dto.Token);
+                return Ok(new {Token = token});
+
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

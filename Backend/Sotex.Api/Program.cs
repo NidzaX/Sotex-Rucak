@@ -10,6 +10,10 @@ using Sotex.Api.Services.DependencyInjection;
 using Sotex.Api.Infrastructure;
 using Microsoft.AspNetCore.Authentication.Google;
 using Sotex.Api.Repo;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Sotex.Api.Mapping;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,18 +22,80 @@ builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("Ope
 builder.Services.AddHttpClient<IMenuService, MenuService>();
 builder.Services.AddScoped<ResizeImage>();
 
-//builder.Services.AddAuthentication().AddGoogle(googleOptions =>
-//{
-//    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-//    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-//});
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+});
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Backend", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
+var corsPolicy = "_cors";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: corsPolicy, builder =>
+    {
+        builder.WithOrigins("http://localhost:4200")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
+});
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "http://localhost:5105", // Your valid issuer
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["ClientSecret"])) 
+    };
+});
+
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+});
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ProjectDatabase")));
@@ -47,14 +113,20 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend v1"));
 }
+
 
 app.UseHttpsRedirection();
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseRouting();
+
+app.UseCors(corsPolicy);
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

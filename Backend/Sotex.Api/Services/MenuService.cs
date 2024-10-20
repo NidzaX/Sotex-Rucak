@@ -150,8 +150,5 @@ namespace Sotex.Api.Services
             }
         }
 
-
-
-
     }
 }

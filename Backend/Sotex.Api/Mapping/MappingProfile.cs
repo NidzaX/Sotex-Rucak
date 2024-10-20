@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Sotex.Api.Dto.MenuDto;
+using Sotex.Api.Dto.UserDto;
 using Sotex.Api.Model;
 
 namespace Sotex.Api.Mapping
@@ -27,6 +28,9 @@ namespace Sotex.Api.Mapping
 
             // Map Dish to DishDto and vice versa
             CreateMap<Dish, DishDto>().ReverseMap();
+
+            CreateMap<User, GoogleRegisterDto>().ReverseMap();
+
         }
     }
 }
