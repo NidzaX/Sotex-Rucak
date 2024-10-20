@@ -19,7 +19,7 @@ namespace Sotex.Api.Controllers
         }
 
         [HttpPost("register-google")]
-        public async Task<IActionResult> RegisterGoogleUser(GoogleRegisterDto dto)
+        public async Task<IActionResult> RegisterGoogleUser([FromForm] GoogleRegisterDto dto)
         {
             try
             {
