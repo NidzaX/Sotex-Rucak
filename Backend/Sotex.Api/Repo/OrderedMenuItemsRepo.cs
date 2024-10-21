@@ -1,24 +1,28 @@
 ﻿using Sotex.Api.Infrastructure;
 using Sotex.Api.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Sotex.Api.Repo
 {
     public class OrderedMenuItemsRepo
     {
-        private ProjectDbContext projectDbContext;
+        private readonly ProjectDbContext _projectDbContext;
+
         public OrderedMenuItemsRepo(ProjectDbContext context)
         {
-            projectDbContext = context;
+            _projectDbContext = context;
         }
-        public OrderedMenuItem AddOrderedMenuItem(OrderedMenuItem orderedMenuItem)
+
+        public async Task<OrderedMenuItem> AddOrderedMenuItemAsync(OrderedMenuItem orderedMenuItem)
         {
-            OrderedMenuItem retVal = projectDbContext.OrderedMenuItems.Add(orderedMenuItem).Entity;
-            projectDbContext.SaveChanges();
-            return retVal;
+            var retVal = await _projectDbContext.OrderedMenuItems.AddAsync(orderedMenuItem);
+            await _projectDbContext.SaveChangesAsync();
+            return retVal.Entity;
         }
-        public List<OrderedMenuItem> GetAll()
+
+        public async Task<List<OrderedMenuItem>> GetAllAsync()
         {
-            return projectDbContext.OrderedMenuItems.ToList<OrderedMenuItem>();
+            return await _projectDbContext.OrderedMenuItems.ToListAsync();
         }
     }
 }

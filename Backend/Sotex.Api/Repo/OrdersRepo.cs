@@ -1,34 +1,35 @@
 ﻿using Sotex.Api.Infrastructure;
 using Sotex.Api.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Sotex.Api.Repo
 {
     public class OrdersRepo
     {
-        private ProjectDbContext projectDbContext;
+        private readonly ProjectDbContext _projectDbContext;
 
         public OrdersRepo(ProjectDbContext context)
         {
-            projectDbContext = context;
+            _projectDbContext = context;
         }
 
-        public Order AddOrder(Order order)
+        public async Task<Order> AddOrderAsync(Order order)
         {
-            Order retVal = projectDbContext.Orders.Add(order).Entity;
-            projectDbContext.SaveChanges();
-            return retVal;
+            var retVal = await _projectDbContext.Orders.AddAsync(order);
+            await _projectDbContext.SaveChangesAsync();
+            return retVal.Entity;
         }
 
-        public Order UpdateOrder(Order order)
+        public async Task<Order> UpdateOrderAsync(Order order)
         {
-            Order retVal = projectDbContext.Orders.Update(order).Entity;
-            projectDbContext.SaveChanges();
-            return retVal;
+            var retVal = _projectDbContext.Orders.Update(order);
+            await _projectDbContext.SaveChangesAsync();
+            return retVal.Entity;
         }
 
-        public List<Order> GetAll()
+        public async Task<List<Order>> GetAllAsync()
         {
-            return projectDbContext.Orders.ToList();
+            return await _projectDbContext.Orders.ToListAsync();
         }
     }
 }
