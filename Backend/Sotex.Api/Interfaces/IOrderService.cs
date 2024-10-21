@@ -4,8 +4,8 @@ namespace Sotex.Api.Interfaces
 {
     public interface IOrderService
     {
-        Task<int> AddOrderAsync(NewOrderDto orderDto);
-        Task<bool> CancelOrder(Guid orderId);
+        Task<Guid> AddOrderAsync(NewOrderDto orderDto);
+        Task<bool> CancelOrderAsync(Guid orderId);
 
     }
 }

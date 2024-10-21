@@ -42,7 +42,7 @@ namespace Sotex.Api.Migrations
 
                     b.HasIndex("MenuId");
 
-                    b.ToTable("Dishes");
+                    b.ToTable("Dishes", (string)null);
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.Menu", b =>
@@ -72,7 +72,7 @@ namespace Sotex.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Menus");
+                    b.ToTable("Menus", (string)null);
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.Order", b =>
@@ -100,7 +100,7 @@ namespace Sotex.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.OrderedMenuItem", b =>
@@ -131,7 +131,7 @@ namespace Sotex.Api.Migrations
 
                     b.HasIndex("SideDishId");
 
-                    b.ToTable("OrderedMenuItems");
+                    b.ToTable("OrderedMenuItems", (string)null);
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.SideDish", b =>
@@ -151,7 +151,7 @@ namespace Sotex.Api.Migrations
 
                     b.HasIndex("MenuId");
 
-                    b.ToTable("SideDishes");
+                    b.ToTable("SideDishes", (string)null);
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.User", b =>
@@ -179,7 +179,7 @@ namespace Sotex.Api.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Sotex.Api.Model.Dish", b =>
@@ -201,7 +201,7 @@ namespace Sotex.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Sotex.Api.Model.OrderInfo", "OrderInfo", b1 =>
+                    b.OwnsOne("Sotex.Api.Model.Menu.OrderInfo#Sotex.Api.Model.OrderInfo", "OrderInfo", b1 =>
                         {
                             b1.Property<Guid>("MenuId")
                                 .HasColumnType("uuid");
@@ -218,7 +218,7 @@ namespace Sotex.Api.Migrations
 
                             b1.HasKey("MenuId");
 
-                            b1.ToTable("Menus");
+                            b1.ToTable("Menus", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("MenuId");

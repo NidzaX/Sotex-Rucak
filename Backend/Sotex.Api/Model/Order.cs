@@ -6,7 +6,7 @@ namespace Sotex.Api.Model
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public int TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime ValidUntil { get; set; }
         public bool IsCancelled { get; set; }
