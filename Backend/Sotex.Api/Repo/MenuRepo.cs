@@ -41,5 +41,13 @@ namespace Sotex.Api.Repo
                 );
         }
 
+        public async Task<Menu> FindMenuByIdAsync(Guid menuId)
+        {
+            return await _projectDbContext.Menus
+                .Include(m => m.Dishes)        
+                .Include(m => m.SideDishes)    
+                .FirstOrDefaultAsync(m => m.Id == menuId);
+        }
+
     }
 }
