@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
+using System.Text.Json.Serialization;
 
 namespace Sotex.Api.Model
 {
@@ -9,9 +10,14 @@ namespace Sotex.Api.Model
         public string SpecialOffer { get; set; }
         public OrderInfo OrderInfo { get; set; } 
         public Guid UserId { get; set; }
+
+        [JsonIgnore]
         public User User { get; set; }
 
+        [JsonIgnore]
         public List<Dish> Dishes { get; set; } = new List<Dish>();
+
+        [JsonIgnore]
         public List<SideDish> SideDishes { get; set; } = new List<SideDish>();
 
         public List<OrderedMenuItem> OrderedMenuItems { get; set; } = new List<OrderedMenuItem>();

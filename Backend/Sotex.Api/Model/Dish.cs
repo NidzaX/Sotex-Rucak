@@ -1,4 +1,6 @@
-﻿namespace Sotex.Api.Model
+﻿using System.Text.Json.Serialization;
+
+namespace Sotex.Api.Model
 {
     public class Dish
     {
@@ -7,6 +9,8 @@
         public decimal Price { get; set; }
 
         public Guid MenuId { get; set; }
+
+        [JsonIgnore]
         public Menu Menu { get; set; }
     }
 }
