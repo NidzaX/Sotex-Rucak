@@ -40,6 +40,12 @@ namespace Sotex.Api.Services
                 throw new ArgumentException("File cannot be null or empty.");
             }
 
+            if(await _menuRepo.HasActiveOrUpcomingMenuAsync(userId))
+            {
+                throw new InvalidOperationException("You cannot upload a new menu because an active or scheduled menu already exists.");
+            }
+
+
             string base64Image;
             using (var fileStream = file.OpenReadStream())
             {
@@ -135,8 +141,22 @@ namespace Sotex.Api.Services
                         UserId = userId 
                     };
 
-                    var savedMenu = await _menuRepo.AddMenuAsync(menuDto);
-                    return savedMenu;
+                    var now = DateTime.UtcNow;
+                    var startDate = now.AddDays(1).Date;
+                    var endDate = startDate.AddHours(23). AddMinutes(59).AddSeconds(59);
+                    menuDto.StartDate = startDate;
+                    menuDto.EndDate = endDate;
+
+                    try
+                    {
+                        var savedMenu = await _menuRepo.AddMenuAsync(menuDto);
+                        return savedMenu;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.InnerException?.Message);
+                        throw;
+                    }
                 }
                 else
                 {
