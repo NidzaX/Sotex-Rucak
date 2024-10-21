@@ -5,12 +5,12 @@ namespace Sotex.Api.Services
 {
     public class OrderService : IOrderService
     {
-        public int AddOrder(NewOrderDto orderDto)
+        public Task<int> AddOrderAsync(NewOrderDto orderDto)
         {
             throw new NotImplementedException();
         }
 
-        public bool CancelOrder(Guid orderId)
+        public Task<bool> CancelOrder(Guid orderId)
         {
             throw new NotImplementedException();
         }

@@ -7,6 +7,8 @@ namespace Sotex.Api.Model
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public string SpecialOffer { get; set; }
         public OrderInfo OrderInfo { get; set; } 
         public Guid UserId { get; set; }
