@@ -38,6 +38,8 @@ namespace Sotex.Api.Services
                 throw new InvalidOperationException("No menu items provided.");
             }
 
+            var menuId = firstMenuItem.DishId ?? firstMenuItem.SideDishId ?? Guid.Empty;
+            Console.WriteLine($"Searching for Menu with ID: {menuId}");
             var menu = await _menuRepo.FindMenuByIdAsync(firstMenuItem.DishId ?? firstMenuItem.SideDishId ?? Guid.Empty);
             if (menu == null)
             {

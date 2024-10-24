@@ -15,7 +15,7 @@ namespace Sotex.Api.Controllers
             _ordersService = ordersService;
         }
 
-        [HttpPost]
+        [HttpPost("addOrder")]
         public async Task<IActionResult> AddOrder([FromForm] NewOrderDto orderDto)
         {
             if (orderDto == null)
@@ -30,7 +30,7 @@ namespace Sotex.Api.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest(new { Error = ex.Message });
             }
             catch (Exception ex)
             {

@@ -48,6 +48,13 @@ namespace Sotex.Api.Repo
                 .Include(m => m.SideDishes)    
                 .FirstOrDefaultAsync(m => m.Id == menuId);
         }
-
+        public async Task<Menu> FindMenuByDishOrSideDishIdAsync(Guid dishId, Guid sideDishId)
+        {
+            return await _projectDbContext.Menus
+                .Include(m => m.Dishes)
+                .Include(m => m.SideDishes)
+                .Where(m => m.Dishes.Any(d => d.Id == dishId) || m.SideDishes.Any(sd => sd.Id == sideDishId))
+                .FirstOrDefaultAsync();
+        }
     }
 }
