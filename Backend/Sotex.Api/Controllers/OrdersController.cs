@@ -26,7 +26,7 @@ namespace Sotex.Api.Controllers
             try
             {
                 var orderId = await _ordersService.AddOrderAsync(orderDto);
-                return Ok(orderId);
+                return Ok(new { OrderId = orderId });
             }
             catch (InvalidOperationException ex)
             {

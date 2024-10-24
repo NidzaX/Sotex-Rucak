@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Sotex.Api.Dto.OrderDto;
 using Sotex.Api.Infrastructure;
 using Sotex.Api.Interfaces;
@@ -40,7 +41,7 @@ namespace Sotex.Api.Services
 
             var menuId = firstMenuItem.DishId ?? firstMenuItem.SideDishId ?? Guid.Empty;
             Console.WriteLine($"Searching for Menu with ID: {menuId}");
-            var menu = await _menuRepo.FindMenuByIdAsync(firstMenuItem.DishId ?? firstMenuItem.SideDishId ?? Guid.Empty);
+            var menu = await _menuRepo.FindMenuByDishOrSideDishIdAsync(firstMenuItem.DishId.GetValueOrDefault(), firstMenuItem.SideDishId.GetValueOrDefault());
             if (menu == null)
             {
                 throw new InvalidOperationException("Menu not found.");
@@ -58,9 +59,6 @@ namespace Sotex.Api.Services
 
             foreach (var menuItem in orderDto.MenuItems)
             {
-                OrderedMenuItem orderedItem = null;
-
-                // Check if it's a dish
                 if (menuItem.DishId.HasValue)
                 {
                     var dish = menu.Dishes.FirstOrDefault(d => d.Id == menuItem.DishId);
@@ -69,17 +67,21 @@ namespace Sotex.Api.Services
                         throw new InvalidOperationException("Dish not found in the menu.");
                     }
 
-                    orderedItem = new OrderedMenuItem
+                    var orderedDish = new OrderedMenuItem
                     {
                         MenuId = menu.Id,
                         DishId = dish.Id,
                         OrderQuantity = menuItem.OrderQuantity,
                         MenuItemType = MenuItemType.Dish
                     };
+                    newOrder.OrderedMenuItems.Add(orderedDish);
                     newOrder.TotalPrice += dish.Price * menuItem.OrderQuantity;
+
+                    // Detach the entity to prevent tracking issues
+                    _projectDbContext.Entry(orderedDish).State = EntityState.Detached;
                 }
-                // Check if it's a side dish
-                else if (menuItem.SideDishId.HasValue)
+
+                if (menuItem.SideDishId.HasValue)
                 {
                     var sideDish = menu.SideDishes.FirstOrDefault(sd => sd.Id == menuItem.SideDishId);
                     if (sideDish == null)
@@ -87,20 +89,21 @@ namespace Sotex.Api.Services
                         throw new InvalidOperationException("Side dish not found in the menu.");
                     }
 
-                    orderedItem = new OrderedMenuItem
+                    var orderedSideDish = new OrderedMenuItem
                     {
                         MenuId = menu.Id,
                         SideDishId = sideDish.Id,
                         OrderQuantity = menuItem.OrderQuantity,
                         MenuItemType = MenuItemType.SideDish
                     };
-                }
+                    newOrder.OrderedMenuItems.Add(orderedSideDish);
 
-                if (orderedItem != null)
-                {
-                    newOrder.OrderedMenuItems.Add(orderedItem);
+                    // Detach the entity to prevent tracking issues
+                    _projectDbContext.Entry(orderedSideDish).State = EntityState.Detached;
                 }
             }
+
+
 
             await _orderRepo.AddOrderAsync(newOrder);
 
