@@ -42,7 +42,7 @@ namespace Sotex.Api.Services
                 IsCancelled = false,
                 OrderedMenuItems = new List<OrderedMenuItem>()
             };
-            await _orderRepo.AddOrderAsync(newOrder);  // Save to get the OrderId
+            await _orderRepo.AddOrderAsync(newOrder);  // Save to get OrderId
 
             // 3. Loop through all menu items and process them
             foreach (var menuItem in orderDto.MenuItems)
@@ -66,11 +66,12 @@ namespace Sotex.Api.Services
                         OrderId = newOrder.Id,
                         MenuId = menu.Id,
                         DishId = dish.Id,
-                        OrderQuantity = menuItem.OrderQuantity,
+                        OrderQuantity = menuItem.DishQuantity,  // Use DishQuantity for this dish
                         MenuItemType = MenuItemType.Dish
                     };
 
-                    newOrder.TotalPrice += dish.Price * menuItem.OrderQuantity;
+                    // Update the total price based on the dish quantity
+                    newOrder.TotalPrice += dish.Price * menuItem.DishQuantity;
                     newOrder.OrderedMenuItems.Add(orderedDish);
                 }
 
@@ -86,11 +87,11 @@ namespace Sotex.Api.Services
                         OrderId = newOrder.Id,
                         MenuId = menu.Id,
                         SideDishId = sideDish.Id,
-                        OrderQuantity = menuItem.OrderQuantity,
+                        OrderQuantity = menuItem.SideDishQuantity,  // Use SideDishQuantity for this side dish
                         MenuItemType = MenuItemType.SideDish
                     };
 
-                    // Add side dish item to the order (assuming side dishes don't contribute to total price)
+                    // Assuming side dishes don't contribute to the total price
                     newOrder.OrderedMenuItems.Add(orderedSideDish);
                 }
             }
@@ -100,6 +101,7 @@ namespace Sotex.Api.Services
 
             return newOrder.Id;
         }
+
 
 
 
