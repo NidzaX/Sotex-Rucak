@@ -2,7 +2,8 @@
 {
     public class OrderMenuItemQuantityTemp
     {
-        public Guid MenuId { get; set; }
+        public Guid? DishId { get; set; }
+        public Guid? SideDishId { get; set; }
         public int OrderQuantity {  get; set; }
     }
 }

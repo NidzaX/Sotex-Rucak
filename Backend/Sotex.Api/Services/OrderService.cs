@@ -27,14 +27,18 @@ namespace Sotex.Api.Services
         public async Task<Guid> AddOrderAsync(NewOrderDto orderDto)
         {
             var user = await _userRepo.FindUserByUsernameAsync(orderDto.Username);
-            if(user == null)
+            if (user == null)
             {
                 throw new Exception("User not found");
             }
 
-            var menuId = orderDto.MenuItems.First().MenuId;
-            var menu = await _menuRepo.FindMenuByIdAsync(menuId);
+            var firstMenuItem = orderDto.MenuItems.FirstOrDefault();
+            if (firstMenuItem == null)
+            {
+                throw new InvalidOperationException("No menu items provided.");
+            }
 
+            var menu = await _menuRepo.FindMenuByIdAsync(firstMenuItem.DishId ?? firstMenuItem.SideDishId ?? Guid.Empty);
             if (menu == null)
             {
                 throw new InvalidOperationException("Menu not found.");
@@ -52,37 +56,47 @@ namespace Sotex.Api.Services
 
             foreach (var menuItem in orderDto.MenuItems)
             {
-                var dish = menu.Dishes.FirstOrDefault(d => d.Id == menuItem.MenuId);
-                var sideDish = menu.SideDishes.FirstOrDefault(sd => sd.Id == menuItem.MenuId);
+                OrderedMenuItem orderedItem = null;
 
-                if(dish != null)
+                // Check if it's a dish
+                if (menuItem.DishId.HasValue)
                 {
-                    var orderedItem = new OrderedMenuItem
+                    var dish = menu.Dishes.FirstOrDefault(d => d.Id == menuItem.DishId);
+                    if (dish == null)
+                    {
+                        throw new InvalidOperationException("Dish not found in the menu.");
+                    }
+
+                    orderedItem = new OrderedMenuItem
                     {
                         MenuId = menu.Id,
                         DishId = dish.Id,
                         OrderQuantity = menuItem.OrderQuantity,
                         MenuItemType = MenuItemType.Dish
                     };
-
-                    newOrder.OrderedMenuItems.Add(orderedItem);
                     newOrder.TotalPrice += dish.Price * menuItem.OrderQuantity;
                 }
-                else if(sideDish != null)
+                // Check if it's a side dish
+                else if (menuItem.SideDishId.HasValue)
                 {
-                    var orderedItem = new OrderedMenuItem
+                    var sideDish = menu.SideDishes.FirstOrDefault(sd => sd.Id == menuItem.SideDishId);
+                    if (sideDish == null)
+                    {
+                        throw new InvalidOperationException("Side dish not found in the menu.");
+                    }
+
+                    orderedItem = new OrderedMenuItem
                     {
                         MenuId = menu.Id,
                         SideDishId = sideDish.Id,
                         OrderQuantity = menuItem.OrderQuantity,
                         MenuItemType = MenuItemType.SideDish
                     };
-
-                    newOrder.OrderedMenuItems.Add(orderedItem);
                 }
-                else
+
+                if (orderedItem != null)
                 {
-                    throw new InvalidOperationException("Menu item not found in the menu.");
+                    newOrder.OrderedMenuItems.Add(orderedItem);
                 }
             }
 
@@ -90,6 +104,7 @@ namespace Sotex.Api.Services
 
             return newOrder.Id;
         }
+
 
         public Task<bool> CancelOrderAsync(Guid orderId)
         {

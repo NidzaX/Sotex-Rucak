@@ -16,7 +16,7 @@ namespace Sotex.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddOrder([FromBody] NewOrderDto orderDto)
+        public async Task<IActionResult> AddOrder([FromForm] NewOrderDto orderDto)
         {
             if (orderDto == null)
             {
