@@ -1,31 +1,35 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sotex.Api.Model;
 
-public class OrderedMenuItemsConfiguration : IEntityTypeConfiguration<OrderedMenuItem>
+namespace Sotex.Api.Infrastructure.Configurations
 {
-    public void Configure(EntityTypeBuilder<OrderedMenuItem> builder)
+    public class OrderedMenuItemsConfiguration : IEntityTypeConfiguration<OrderedMenuItem>
     {
-        builder.HasKey(x => new { x.OrderId, x.MenuId, x.DishId, x.SideDishId });
+        public void Configure(EntityTypeBuilder<OrderedMenuItem> builder)
+        {
+            builder.HasKey(x => new { x.OrderId, x.MenuId, x.MenuItemType });
+            builder.HasOne(x => x.Order)
+                .WithMany(x => x.OrderedMenuItems)
+                .HasForeignKey(x => x.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(x => x.Order)
-            .WithMany(x => x.OrderedMenuItems)
-            .HasForeignKey(x => x.OrderId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.Menu)
+                .WithMany(x => x.OrderedMenuItems)
+                .HasForeignKey(x => x.MenuId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.Menu)
-            .WithMany(x => x.OrderedMenuItems)
-            .HasForeignKey(x => x.MenuId)
-            .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(x => x.Dish)
+                .WithMany()
+                .HasForeignKey(x => x.DishId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(x => x.Dish)
-            .WithMany()
-            .HasForeignKey(x => x.DishId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.SideDish)
+                .WithMany()
+                .HasForeignKey(x => x.SideDishId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(x => x.SideDish)
-            .WithMany()
-            .HasForeignKey(x => x.SideDishId)
-            .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }
