@@ -111,6 +111,10 @@ builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
+builder.Services.AddLogging();
+builder.Services.AddScoped<ILogger<OrdersRepo>, Logger<OrdersRepo>>();
+builder.Services.AddScoped<ILogger<OrderService>, Logger<OrderService>>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
