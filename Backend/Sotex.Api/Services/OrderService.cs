@@ -64,6 +64,7 @@ namespace Sotex.Api.Services
 
                 var orderedDish = new OrderedMenuItem
                 {
+                    OrderedMenuItemId = Guid.NewGuid(),
                     OrderId = newOrder.Id,
                     MenuId = dish.MenuId,
                     DishId = dish.Id,
@@ -84,6 +85,7 @@ namespace Sotex.Api.Services
 
                 var orderedSideDish = new OrderedMenuItem
                 {
+                    OrderedMenuItemId = Guid.NewGuid(),
                     OrderId = newOrder.Id,
                     MenuId = sideDishEntity.MenuId,
                     SideDishId = sideDishEntity.Id,

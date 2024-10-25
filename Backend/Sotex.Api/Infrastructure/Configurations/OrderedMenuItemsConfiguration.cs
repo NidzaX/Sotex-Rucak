@@ -9,7 +9,7 @@ namespace Sotex.Api.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderedMenuItem> builder)
         {
-            builder.HasKey(x => new { x.OrderId, x.MenuId, x.MenuItemType });
+            builder.HasKey(x => x.OrderedMenuItemId);
             builder.HasOne(x => x.Order)
                 .WithMany(x => x.OrderedMenuItems)
                 .HasForeignKey(x => x.OrderId)
