@@ -164,9 +164,36 @@ namespace Sotex.Api.Services
 
         }
 
-        public Task<bool> CancelOrderAsync(Guid orderId)
+        public async Task<bool> CancelOrderAsync(Guid orderId)
         {
-            throw new NotImplementedException();
+            var order = await  _projectDbContext.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+
+            if (order == null)
+            {
+                _logger?.LogWarning("Order with ID {OrderId} not found. Cannot cancel.", orderId);
+                throw new InvalidOperationException("Order not found.");
+            }
+
+            if(order.IsCancelled)
+            {
+                _logger?.LogInformation("Order with ID {OrderId} is already cancelled.", orderId);
+                return false; 
+            }
+
+            order.IsCancelled = true;
+
+            try
+            {
+                await _projectDbContext.SaveChangesAsync();
+                _logger?.LogInformation("Order with ID {OrderId} has been successfully cancelled.", orderId);
+                return true;
+
+            }
+            catch(Exception ex)
+            {
+                _logger?.LogError(ex, "An error occurred while cancelling the order with ID {OrderId}.", orderId);
+                throw;
+            }
         }
     }
 }
