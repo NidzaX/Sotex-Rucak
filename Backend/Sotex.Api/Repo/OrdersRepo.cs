@@ -22,10 +22,19 @@ namespace Sotex.Api.Repo
 
         public async Task<Order> UpdateOrderAsync(Order order)
         {
-            var retVal = _projectDbContext.Orders.Update(order);
-            await _projectDbContext.SaveChangesAsync();
-            return retVal.Entity;
+            try
+            {
+                var retVal = _projectDbContext.Orders.Update(order);
+                await _projectDbContext.SaveChangesAsync();
+                return retVal.Entity;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                // Handle concurrency conflict (e.g., reload entity or inform the user)
+                throw new InvalidOperationException("The order was updated or deleted by another process.", ex);
+            }
         }
+
 
         public async Task<List<Order>> GetAllAsync()
         {

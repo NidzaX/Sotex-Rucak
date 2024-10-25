@@ -52,48 +52,52 @@ namespace Sotex.Api.Services
             if (!dishesExist)
                 throw new InvalidOperationException("One or more dishes or side dishes are not available in the menu.");
 
-            // 4. Process each dish in the order
             foreach (var dishDto in orderDto.Dishes)
             {
-                if (dishDto.DishId == Guid.Empty)
-                    continue; // Skip if no dish ID is provided
+                if (dishDto.DishId == Guid.Empty) continue; // Skip if no dish ID is provided
 
                 var dish = await _menuRepo.FindDishByIdAsync(dishDto.DishId);
                 if (dish == null)
                     throw new InvalidOperationException("Dish not found in the menu.");
 
-                var orderedDish = new OrderedMenuItem
+                for (int i = 0; i < dishDto.DishQuantity; i++) // Loop according to dish quantity
                 {
-                    OrderedMenuItemId = Guid.NewGuid(),
-                    OrderId = newOrder.Id,
-                    MenuId = dish.MenuId,
-                    DishId = dish.Id,
-                    OrderQuantity = dishDto.DishQuantity,
-                    MenuItemType = MenuItemType.Dish
-                };
+                    var orderedDish = new OrderedMenuItem
+                    {
+                        OrderedMenuItemId = Guid.NewGuid(),
+                        OrderId = newOrder.Id,
+                        MenuId = dish.MenuId,
+                        DishId = dish.Id,
+                        OrderQuantity = 1, // Each entry represents a single unit
+                        MenuItemType = MenuItemType.Dish
+                    };
 
-                newOrder.TotalPrice += dish.Price * dishDto.DishQuantity;
-                newOrder.OrderedMenuItems.Add(orderedDish);
+                    newOrder.TotalPrice += dish.Price;
+                    newOrder.OrderedMenuItems.Add(orderedDish);
+                }
             }
 
-            // 5. Process each side dish in the order
+            // Process each side dish in the order
             foreach (var sideDishDto in orderDto.SideDishes)
             {
                 var sideDishEntity = await _menuRepo.FindSideDishByIdAsync(sideDishDto.SideDishId);
                 if (sideDishEntity == null)
                     throw new InvalidOperationException("Side dish not found in the menu.");
 
-                var orderedSideDish = new OrderedMenuItem
+                for (int i = 0; i < sideDishDto.SideDishQuantity; i++) // Loop according to side dish quantity
                 {
-                    OrderedMenuItemId = Guid.NewGuid(),
-                    OrderId = newOrder.Id,
-                    MenuId = sideDishEntity.MenuId,
-                    SideDishId = sideDishEntity.Id,
-                    OrderQuantity = sideDishDto.SideDishQuantity,
-                    MenuItemType = MenuItemType.SideDish
-                };
+                    var orderedSideDish = new OrderedMenuItem
+                    {
+                        OrderedMenuItemId = Guid.NewGuid(),
+                        OrderId = newOrder.Id,
+                        MenuId = sideDishEntity.MenuId,
+                        SideDishId = sideDishEntity.Id,
+                        OrderQuantity = 1, // Each entry represents a single unit
+                        MenuItemType = MenuItemType.SideDish
+                    };
 
-                newOrder.OrderedMenuItems.Add(orderedSideDish);
+                    newOrder.OrderedMenuItems.Add(orderedSideDish);
+                }
             }
 
             // 6. Save the new order to the database
