@@ -10,6 +10,7 @@ namespace Sotex.Api.Infrastructure.Configurations
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.Property(x => x.Timestamp).IsRowVersion();
 
             builder.HasMany(x => x.OrderedMenuItems)
                 .WithOne()

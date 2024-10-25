@@ -1,4 +1,5 @@
 ﻿using Microsoft.Graph.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sotex.Api.Model
 {
@@ -10,6 +11,9 @@ namespace Sotex.Api.Model
         public DateTime OrderDate { get; set; }
         public DateTime ValidUntil { get; set; }
         public bool IsCancelled { get; set; }
+
+        [Timestamp]
+        public byte[] Timestamp { get; set; } // EF Core will use this for concurrency checking
 
         public List<OrderedMenuItem> OrderedMenuItems { get; set; } = new List<OrderedMenuItem>();
 
