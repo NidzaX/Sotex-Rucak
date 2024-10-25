@@ -48,13 +48,45 @@ namespace Sotex.Api.Repo
                 .Include(m => m.SideDishes)    
                 .FirstOrDefaultAsync(m => m.Id == menuId);
         }
-        public async Task<Menu> FindMenuByDishOrSideDishIdAsync(Guid dishId, Guid sideDishId)
+        public async Task<bool> AreDishesInMenuAsync(IEnumerable<Guid> dishIds, IEnumerable<Guid> sideDishIds)
         {
-            return await _projectDbContext.Menus
+            // Check for valid dish IDs
+            if (dishIds == null || !dishIds.Any() && (sideDishIds == null || !sideDishIds.Any()))
+            {
+                return true; // No dishes to check, so return true
+            }
+
+            // Get the menu items that are valid
+            var menuItems = await _projectDbContext.Menus
                 .Include(m => m.Dishes)
                 .Include(m => m.SideDishes)
-                .Where(m => m.Dishes.Any(d => d.Id == dishId) || m.SideDishes.Any(sd => sd.Id == sideDishId))
-                .FirstOrDefaultAsync();
+                .ToListAsync();
+
+            var dishIdsSet = new HashSet<Guid>(dishIds);
+            var sideDishIdsSet = new HashSet<Guid>(sideDishIds);
+
+            // Check if all dishes are in the menu
+            foreach (var menu in menuItems)
+            {
+                if (menu.Dishes.Any(d => dishIdsSet.Contains(d.Id)) || menu.SideDishes.Any(sd => sideDishIdsSet.Contains(sd.Id)))
+                {
+                    return true; // Found at least one matching dish or side dish
+                }
+            }
+
+            return false; // No matching dishes or side dishes found in the menus
+        }
+
+        public async Task<Dish> FindDishByIdAsync(Guid dishId)
+        {
+            return await _projectDbContext.Dishes
+                .FirstOrDefaultAsync(d => d.Id == dishId);
+        }
+
+        public async Task<SideDish> FindSideDishByIdAsync(Guid sideDishId)
+        {
+            return await _projectDbContext.SideDishes
+                .FirstOrDefaultAsync(sd => sd.Id == sideDishId);
         }
     }
 }

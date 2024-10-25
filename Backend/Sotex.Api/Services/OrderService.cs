@@ -32,7 +32,7 @@ namespace Sotex.Api.Services
             if (user == null)
                 throw new Exception("User not found");
 
-            // 2. Create a new order and save it first to get the OrderId
+            // 2. Create a new order
             var newOrder = new Order
             {
                 UserId = user.Id,
@@ -42,70 +42,63 @@ namespace Sotex.Api.Services
                 IsCancelled = false,
                 OrderedMenuItems = new List<OrderedMenuItem>()
             };
-            await _orderRepo.AddOrderAsync(newOrder);  // Save to get OrderId
+            await _orderRepo.AddOrderAsync(newOrder);
 
-            // 3. Loop through all menu items and process them
-            foreach (var menuItem in orderDto.MenuItems)
+            // 3. Check if the dishes and side dishes are in the menu
+            var dishIds = orderDto.Dishes.Select(d => d.DishId);
+            var sideDishIds = orderDto.SideDishes.Select(sd => sd.SideDishId);
+
+            var dishesExist = await _menuRepo.AreDishesInMenuAsync(dishIds, sideDishIds);
+            if (!dishesExist)
+                throw new InvalidOperationException("One or more dishes or side dishes are not available in the menu.");
+
+            // 4. Process each dish in the order
+            foreach (var dishDto in orderDto.Dishes)
             {
-                var menu = await _menuRepo.FindMenuByDishOrSideDishIdAsync(
-                    menuItem.DishId.GetValueOrDefault(),
-                    menuItem.SideDishId.GetValueOrDefault());
+                if (dishDto.DishId == Guid.Empty)
+                    continue; // Skip if no dish ID is provided
 
-                if (menu == null)
-                    throw new InvalidOperationException("Menu not found.");
+                var dish = await _menuRepo.FindDishByIdAsync(dishDto.DishId);
+                if (dish == null)
+                    throw new InvalidOperationException("Dish not found in the menu.");
 
-                // Handle Dish if present
-                if (menuItem.DishId.HasValue)
+                var orderedDish = new OrderedMenuItem
                 {
-                    var dish = menu.Dishes.FirstOrDefault(d => d.Id == menuItem.DishId);
-                    if (dish == null)
-                        throw new InvalidOperationException("Dish not found in the menu.");
+                    OrderId = newOrder.Id,
+                    MenuId = dish.MenuId,
+                    DishId = dish.Id,
+                    OrderQuantity = dishDto.DishQuantity,
+                    MenuItemType = MenuItemType.Dish
+                };
 
-                    var orderedDish = new OrderedMenuItem
-                    {
-                        OrderId = newOrder.Id,
-                        MenuId = menu.Id,
-                        DishId = dish.Id,
-                        OrderQuantity = menuItem.DishQuantity,  // Use DishQuantity for this dish
-                        MenuItemType = MenuItemType.Dish
-                    };
-
-                    // Update the total price based on the dish quantity
-                    newOrder.TotalPrice += dish.Price * menuItem.DishQuantity;
-                    newOrder.OrderedMenuItems.Add(orderedDish);
-                }
-
-                // Handle SideDish if present
-                if (menuItem.SideDishId.HasValue)
-                {
-                    var sideDish = menu.SideDishes.FirstOrDefault(sd => sd.Id == menuItem.SideDishId);
-                    if (sideDish == null)
-                        throw new InvalidOperationException("Side dish not found in the menu.");
-
-                    var orderedSideDish = new OrderedMenuItem
-                    {
-                        OrderId = newOrder.Id,
-                        MenuId = menu.Id,
-                        SideDishId = sideDish.Id,
-                        OrderQuantity = menuItem.SideDishQuantity,  // Use SideDishQuantity for this side dish
-                        MenuItemType = MenuItemType.SideDish
-                    };
-
-                    // Assuming side dishes don't contribute to the total price
-                    newOrder.OrderedMenuItems.Add(orderedSideDish);
-                }
+                newOrder.TotalPrice += dish.Price * dishDto.DishQuantity;
+                newOrder.OrderedMenuItems.Add(orderedDish);
             }
 
-            // 4. Update the order with the ordered items and total price
+            // 5. Process each side dish in the order
+            foreach (var sideDishDto in orderDto.SideDishes)
+            {
+                var sideDishEntity = await _menuRepo.FindSideDishByIdAsync(sideDishDto.SideDishId);
+                if (sideDishEntity == null)
+                    throw new InvalidOperationException("Side dish not found in the menu.");
+
+                var orderedSideDish = new OrderedMenuItem
+                {
+                    OrderId = newOrder.Id,
+                    MenuId = sideDishEntity.MenuId,
+                    SideDishId = sideDishEntity.Id,
+                    OrderQuantity = sideDishDto.SideDishQuantity,
+                    MenuItemType = MenuItemType.SideDish
+                };
+
+                newOrder.OrderedMenuItems.Add(orderedSideDish);
+            }
+
+            // 6. Save the new order to the database
             await _orderRepo.UpdateOrderAsync(newOrder);
 
-            return newOrder.Id;
+            return newOrder.Id; // Return the new order ID
         }
-
-
-
-
-
 
         public Task<bool> CancelOrderAsync(Guid orderId)
         {

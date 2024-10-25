@@ -23,11 +23,13 @@ namespace Sotex.Api.Infrastructure.Configurations
             builder.HasOne(x => x.Dish)
                 .WithMany()
                 .HasForeignKey(x => x.DishId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.SideDish)
                 .WithMany()
                 .HasForeignKey(x => x.SideDishId)
+                .IsRequired(false) 
                 .OnDelete(DeleteBehavior.Restrict);
 
         }
