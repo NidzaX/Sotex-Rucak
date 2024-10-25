@@ -6,6 +6,7 @@ namespace Sotex.Api.Interfaces
     {
         Task<Guid> AddOrderAsync(NewOrderDto orderDto);
         Task<bool> CancelOrderAsync(Guid orderId);
+        public Task<List<GetAllOrdersDto>> GetAllOrdersAsync(Guid userId);
 
     }
 }

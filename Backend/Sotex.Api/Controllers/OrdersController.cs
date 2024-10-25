@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph.Models;
 using Sotex.Api.Dto.OrderDto;
 using Sotex.Api.Interfaces;
 using Sotex.Api.Services;
@@ -58,6 +59,25 @@ namespace Sotex.Api.Controllers
 
             }
             catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetUserOrders(Guid userId)
+        {
+            try
+            {
+                var orders = await _ordersService.GetAllOrdersAsync(userId);
+
+                if (orders == null || orders.Count == 0)
+                {
+                    return NotFound("No orders found for the specified user.");
+                }
+                
+                return Ok(orders);
+            }catch(Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }

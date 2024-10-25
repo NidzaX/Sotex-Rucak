@@ -195,5 +195,17 @@ namespace Sotex.Api.Services
                 throw;
             }
         }
+
+        public async Task<List<GetAllOrdersDto>> GetAllOrdersAsync(Guid userId)
+        {
+            var orders = await _projectDbContext.Orders
+                .Include(x => x.OrderedMenuItems)
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+
+            var orderDtos = _mapper.Map<List<GetAllOrdersDto>>(orders);
+
+            return orderDtos;
+        }
     }
 }
