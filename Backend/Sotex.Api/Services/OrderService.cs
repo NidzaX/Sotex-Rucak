@@ -201,11 +201,24 @@ namespace Sotex.Api.Services
             var orders = await _projectDbContext.Orders
                 .Include(x => x.OrderedMenuItems)
                 .Where(x => x.UserId == userId)
+                .Select(order => new GetAllOrdersDto
+                {
+                    Id = order.Id,
+                    TotalPrice = order.TotalPrice,
+                    OrderDate = order.OrderDate,
+                    ValidUntil = order.ValidUntil,
+                    IsCancelled = order.IsCancelled,
+                    OrderedMenuItems = order.OrderedMenuItems.Select(item => new OrderedMenuItemDto
+                    {
+                        DishName = item.Dish.Name,
+                        SideDishName = item.SideDish.Name,
+                        MenuItemType =  item.MenuItemType.ToString(),
+                    }).ToList()
+                })
                 .ToListAsync();
 
-            var orderDtos = _mapper.Map<List<GetAllOrdersDto>>(orders);
-
-            return orderDtos;
+            return orders;
         }
+
     }
 }

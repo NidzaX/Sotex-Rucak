@@ -32,6 +32,9 @@ namespace Sotex.Api.Mapping
 
             CreateMap<User, GoogleRegisterDto>().ReverseMap();
             CreateMap<Order, GetAllOrdersDto>().ReverseMap();
+            CreateMap<OrderedMenuItem, OrderedMenuItemDto>()
+            .ForMember(dest => dest.MenuItemType, opt => opt.MapFrom(src => src.MenuItemType == 0 ? "Dish" : "SideDish"))
+            .ReverseMap();
         }
     }
 }

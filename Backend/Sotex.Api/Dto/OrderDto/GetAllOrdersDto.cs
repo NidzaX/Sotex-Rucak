@@ -9,7 +9,7 @@ namespace Sotex.Api.Dto.OrderDto
         public DateTime OrderDate { get; set; }
         public DateTime ValidUntil { get; set; }
         public bool IsCancelled { get; set; }
-        public List<OrderedMenuItem> OrderedMenuItems { get; set; } = new List<OrderedMenuItem>();
+        public List<OrderedMenuItemDto> OrderedMenuItems { get; set; } = new List<OrderedMenuItemDto>();
 
     }
 }
