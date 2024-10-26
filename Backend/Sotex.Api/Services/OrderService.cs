@@ -56,10 +56,12 @@ namespace Sotex.Api.Services
                 UserId = user.Id,
                 TotalPrice = 0m,
                 OrderDate = DateTime.UtcNow,
-                ValidUntil = DateTime.UtcNow.AddHours(1),
+             // ValidUntil = DateTime.UtcNow.AddHours(1),
                 IsCancelled = false,
                 OrderedMenuItems = new List<OrderedMenuItem>()
             };
+
+            DateTime validUntil = DateTime.UtcNow.AddHours(1); // default value
 
             // Check for existing orders with the same Id
             if (await _projectDbContext.Orders.AnyAsync(o => o.Id == newOrder.Id))
@@ -92,6 +94,8 @@ namespace Sotex.Api.Services
                     _logger?.LogWarning("Menu for dish {DishId} is not active.", dishDto.DishId);
                     throw new InvalidOperationException("Cannot place order: one or more dishes are not available.");
                 }
+
+                validUntil = menu.EndDate;
 
                 for (int i = 0; i < dishDto.DishQuantity; i++)
                 {
@@ -127,6 +131,8 @@ namespace Sotex.Api.Services
                     throw new InvalidOperationException("Cannot place order: one or more side dishes are not available.");
                 }
 
+                validUntil = menu.EndDate;
+
 
                 for (int i = 0; i < sideDishDto.SideDishQuantity; i++)
                 {
@@ -146,6 +152,8 @@ namespace Sotex.Api.Services
                     newOrder.OrderedMenuItems.Add(orderedSideDish);
                 }
             }
+
+            newOrder.ValidUntil = validUntil;
 
             using var transaction = await _projectDbContext.Database.BeginTransactionAsync();
             try
