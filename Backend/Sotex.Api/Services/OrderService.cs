@@ -86,6 +86,13 @@ namespace Sotex.Api.Services
                 if (dish == null)
                     throw new InvalidOperationException("Dish not found in the menu.");
 
+                var menu = await _menuRepo.FindMenuByIdAsync(dish.MenuId);
+                if (menu == null || !menu.IsActive)
+                {
+                    _logger?.LogWarning("Menu for dish {DishId} is not active.", dishDto.DishId);
+                    throw new InvalidOperationException("Cannot place order: one or more dishes are not available.");
+                }
+
                 for (int i = 0; i < dishDto.DishQuantity; i++)
                 {
                     var orderedDish = new OrderedMenuItem
@@ -112,6 +119,14 @@ namespace Sotex.Api.Services
                 var sideDishEntity = await _menuRepo.FindSideDishByIdAsync(sideDishDto.SideDishId);
                 if (sideDishEntity == null)
                     throw new InvalidOperationException("Side dish not found in the menu.");
+
+                var menu = await _menuRepo.FindMenuByIdAsync(sideDishEntity.MenuId);
+                if (menu == null || !menu.IsActive)
+                {
+                    _logger?.LogWarning("Menu for side dish {SideDishId} is not active.", sideDishDto.SideDishId);
+                    throw new InvalidOperationException("Cannot place order: one or more side dishes are not available.");
+                }
+
 
                 for (int i = 0; i < sideDishDto.SideDishQuantity; i++)
                 {
