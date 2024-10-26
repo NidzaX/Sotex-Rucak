@@ -189,7 +189,10 @@ namespace Sotex.Api.Services
 
         public async Task<bool> CancelOrderAsync(Guid orderId)
         {
-            var order = await  _projectDbContext.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+            var order = await  _projectDbContext.Orders
+                .Include(x => x.OrderedMenuItems)
+                    .ThenInclude(x => x.Menu)
+                .FirstOrDefaultAsync(x => x.Id == orderId);
 
             if (order == null)
             {
@@ -201,6 +204,13 @@ namespace Sotex.Api.Services
             {
                 _logger?.LogInformation("Order with ID {OrderId} is already cancelled.", orderId);
                 return false; 
+            }
+
+            var isMenuActive = order.OrderedMenuItems.Any(x => x.Menu?.IsActive ?? false);
+            if(!isMenuActive)
+            {
+                _logger?.LogInformation("Order with ID {OrderId} cannot be cancelled because the menu is not active.", orderId);
+                throw new InvalidOperationException("Order cannot be canceled because the menu is not active.");
             }
 
             order.IsCancelled = true;
