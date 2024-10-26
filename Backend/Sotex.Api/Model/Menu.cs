@@ -1,4 +1,5 @@
-﻿using Microsoft.Graph.Models;
+﻿using Microsoft.Graph.Drives.Item.Items.Item.GetActivitiesByIntervalWithStartDateTimeWithEndDateTimeWithInterval;
+using Microsoft.Graph.Models;
 using System.Diagnostics.Contracts;
 using System.Text.Json.Serialization;
 
@@ -8,7 +9,7 @@ namespace Sotex.Api.Model
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive => DateTime.UtcNow >= StartDate && DateTime.UtcNow <= EndDate;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string SpecialOffer { get; set; }

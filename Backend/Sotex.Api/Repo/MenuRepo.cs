@@ -36,9 +36,18 @@ namespace Sotex.Api.Repo
             return await _projectDbContext.Menus
                 .AnyAsync(m =>
                     m.UserId == userId &&
-                    (m.StartDate <= now && m.EndDate >= now) || 
-                    (m.StartDate <= endOfTomorrow && m.EndDate >= tomorrow) 
+                    (m.StartDate <= now && m.EndDate >= now) ||
+                    (m.StartDate <= endOfTomorrow && m.EndDate >= tomorrow)
                 );
+        }
+
+        public async Task<bool> IsMenuActiveAsync(Guid menuId)
+        {
+            var menu = await _projectDbContext.Menus.FindAsync(menuId);
+            if (menu == null)
+                throw new InvalidOperationException("Menu not found");
+            
+            return menu.IsActive;
         }
 
         public async Task<Menu> FindMenuByIdAsync(Guid menuId)
