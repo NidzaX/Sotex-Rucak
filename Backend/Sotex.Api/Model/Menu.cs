@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using Microsoft.Graph.Models;
+using System.Diagnostics.Contracts;
 using System.Text.Json.Serialization;
 
 namespace Sotex.Api.Model
@@ -7,6 +8,7 @@ namespace Sotex.Api.Model
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public bool IsActive { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string SpecialOffer { get; set; }
