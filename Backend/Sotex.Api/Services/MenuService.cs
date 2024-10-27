@@ -147,6 +147,9 @@ namespace Sotex.Api.Services
                     menuDto.StartDate = startDate;
                     menuDto.EndDate = endDate;
 
+                    menuDto.IsActive = false;
+                    menuDto.IsActiveTomorrow = startDate == now.AddDays(1).Date;
+
                     try
                     {
                         var savedMenu = await _menuRepo.AddMenuAsync(menuDto);
