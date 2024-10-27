@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Google.Apis.Auth;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Sotex.Api.Dto.UserDto;
 using Sotex.Api.Infrastructure;
@@ -16,17 +17,17 @@ namespace Sotex.Api.Services
     {
         private readonly IMapper _mapper;
         private readonly ProjectDbContext _dbContext;
-        private readonly IConfigurationSection _secretKey;
-        private readonly IConfigurationSection _clientId;
+        private readonly string _secretKey;
+        private readonly string _clientId;
         private readonly UserRepo _userRepo;
-
-        public UsersService(IMapper mapper, ProjectDbContext dbContext, IConfiguration config)
+  
+        public UsersService(IMapper mapper, ProjectDbContext dbContext, IOptions<GoogleSettings> googleSettings)
         {
             _mapper = mapper;
             _dbContext = dbContext;
             _userRepo = new UserRepo(dbContext);
-            _secretKey = config.GetSection("ClientSecret");
-            _clientId = config.GetSection("ClientId");
+            _secretKey = googleSettings.Value.ClientSecret;
+            _clientId = googleSettings.Value.ClientId;
         }
 
         public async Task<User> RegisterGoogleUserAsync(GoogleRegisterDto dto)
@@ -37,7 +38,7 @@ namespace Sotex.Api.Services
             {
                 GoogleJsonWebSignature.ValidationSettings validationSettings = new GoogleJsonWebSignature.ValidationSettings
                 {
-                    Audience = new List<string>() { _clientId.Value }
+                    Audience = new List<string>() { _clientId }
                 };
 
                 GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
@@ -70,12 +71,12 @@ namespace Sotex.Api.Services
             try
             {
                 // Log expected and actual audiences
-                Console.WriteLine($"Expected Audience: {_clientId.Value}");
+                Console.WriteLine($"Expected Audience: {_clientId}");
 
                 // Validate Google Token
                 var validationSettings = new GoogleJsonWebSignature.ValidationSettings
                 {
-                    Audience = new List<string> { _clientId.Value }
+                    Audience = new List<string> { _clientId }
                 };
 
                 // Validate the token
@@ -102,7 +103,7 @@ namespace Sotex.Api.Services
                     new Claim(ClaimTypes.Email, user.Email)
                 };
 
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
                 var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
                 var tokenOptions = new JwtSecurityToken(

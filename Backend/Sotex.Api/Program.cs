@@ -19,6 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configure settings and dependencies
 builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("OpenAI"));
+builder.Services.Configure<GoogleSettings>(builder.Configuration.GetSection("Authentication:Google"));
 builder.Services.AddHttpClient<IMenuService, MenuService>();
 builder.Services.AddScoped<ResizeImage>();
 
