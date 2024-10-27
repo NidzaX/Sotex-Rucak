@@ -89,13 +89,16 @@ namespace Sotex.Api.Services
                     throw new InvalidOperationException("Dish not found in the menu.");
 
                 var menu = await _menuRepo.FindMenuByIdAsync(dish.MenuId);
-                if (menu == null || !menu.IsActive)
+                if (menu == null || !(menu.IsActive || menu.IsActiveTomorrow))
                 {
                     _logger?.LogWarning("Menu for dish {DishId} is not active.", dishDto.DishId);
                     throw new InvalidOperationException("Cannot place order: one or more dishes are not available.");
                 }
 
-                validUntil = menu.EndDate;
+                if(menu.IsActiveTomorrow && DateTime.UtcNow.AddDays(1) == menu.StartDate.Date)
+                {
+                    validUntil = DateTime.UtcNow;
+                }
 
                 for (int i = 0; i < dishDto.DishQuantity; i++)
                 {
@@ -125,13 +128,16 @@ namespace Sotex.Api.Services
                     throw new InvalidOperationException("Side dish not found in the menu.");
 
                 var menu = await _menuRepo.FindMenuByIdAsync(sideDishEntity.MenuId);
-                if (menu == null || !menu.IsActive)
+                if (menu == null || !(menu.IsActive || menu.IsActiveTomorrow))
                 {
-                    _logger?.LogWarning("Menu for side dish {SideDishId} is not active.", sideDishDto.SideDishId);
-                    throw new InvalidOperationException("Cannot place order: one or more side dishes are not available.");
+                    _logger?.LogWarning("Menu for dish {SideDishId} is not active.", sideDishDto.SideDishId);
+                    throw new InvalidOperationException("Cannot place order: one or more dishes are not available.");
                 }
 
-                validUntil = menu.EndDate;
+                if (menu.IsActiveTomorrow && DateTime.UtcNow.AddDays(1) == menu.StartDate.Date)
+                {
+                    validUntil = DateTime.UtcNow;
+                }
 
 
                 for (int i = 0; i < sideDishDto.SideDishQuantity; i++)

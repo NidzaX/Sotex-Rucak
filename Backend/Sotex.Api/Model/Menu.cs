@@ -9,7 +9,8 @@ namespace Sotex.Api.Model
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public bool IsActive => DateTime.UtcNow >= StartDate && DateTime.UtcNow <= EndDate;
+        public bool IsActive { get; set; }
+        public bool IsActiveTomorrow { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string SpecialOffer { get; set; }
