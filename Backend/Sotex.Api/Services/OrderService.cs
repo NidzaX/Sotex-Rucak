@@ -220,11 +220,10 @@ namespace Sotex.Api.Services
                 return false; 
             }
 
-            var isMenuActive = order.OrderedMenuItems.Any(x => x.Menu?.IsActive ?? false);
-            if(!isMenuActive)
+            if (DateTime.UtcNow > order.ValidUntil)
             {
-                _logger?.LogInformation("Order with ID {OrderId} cannot be cancelled because the menu is not active.", orderId);
-                throw new InvalidOperationException("Order cannot be canceled because the menu is not active.");
+                _logger?.LogInformation("Order with ID {OrderId} cannot be cancelled because it is no longer within the valid period.", orderId);
+                throw new InvalidOperationException("Order cannot be canceled as it is no longer within the valid period.");
             }
 
             order.IsCancelled = true;
