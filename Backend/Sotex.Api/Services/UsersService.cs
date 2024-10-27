@@ -69,38 +69,62 @@ namespace Sotex.Api.Services
         {
             try
             {
-                GoogleJsonWebSignature.ValidationSettings validationSettings = new GoogleJsonWebSignature.ValidationSettings();
-                validationSettings.Audience = new List<string>() { _clientId.Value };
+                // Log expected and actual audiences
+                Console.WriteLine($"Expected Audience: {_clientId.Value}");
 
-                GoogleJsonWebSignature.Payload payload = Task.Run(() => GoogleJsonWebSignature.ValidateAsync(token, validationSettings)).GetAwaiter().GetResult();
+                // Validate Google Token
+                var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new List<string> { _clientId.Value }
+                };
+
+                // Validate the token
+                var payload = await GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
+
+                Console.WriteLine($"Actual Audience from Token: {payload.Audience}");
+
+                if (payload.Email != email)
+                {
+                    throw new UnauthorizedAccessException("Email mismatch.");
+                }
+
+                // Check if the user exists in the database
+                User user = await _userRepo.FindByEmailAsync(email);
+                if (user == null)
+                {
+                    throw new Exception("User with this email does not exist.");
+                }
+
+                // Generate JWT for your app
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Email, user.Email)
+                };
+
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
+                var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
+                var tokenOptions = new JwtSecurityToken(
+                    issuer: "http://localhost:5105",
+                    audience: "http://localhost:4200",
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddMinutes(20),
+                    signingCredentials: signingCredentials
+                );
+
+                return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             }
-            catch (Exception e)
+            catch (UnauthorizedAccessException ex)
             {
-                throw new Exception(e.Message);
+                throw new UnauthorizedAccessException("Login failed: " + ex.Message);
             }
-
-            if (email == "")
-                throw new Exception("Invalid data");
-
-            User user = await _userRepo.FindByEmailAsync(email);
-            if (user == null)
-                throw new Exception("User with that email doesn't exists");
-
-            List<Claim> claims = new List<Claim>();
-
-            claims.Add(new Claim("username", user.Username));
-
-            SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
-            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-            var tokeOptions = new JwtSecurityToken(
-                issuer: "http://localhost:5105", //url servera koji je izdao token
-                claims: claims, //claimovi
-                expires: DateTime.Now.AddMinutes(20), //vazenje tokena u minutama
-                signingCredentials: signinCredentials //kredencijali za potpis
-            );
-            string tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-            return tokenString;
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Login failed: " + ex.Message);
+            }
         }
+
 
     }
 }
