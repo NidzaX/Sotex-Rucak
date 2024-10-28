@@ -38,6 +38,10 @@ namespace Sotex.Api.Controllers
         {
             try
             {
+                if(string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Token))
+                {
+                    return BadRequest(new { error = "Email and Token are required" });
+                }
                 var token = await _usersService.LoginGoogleAsync(dto.Email, dto.Token);
                 return Ok(new {Token = token});
 
