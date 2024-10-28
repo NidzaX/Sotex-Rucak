@@ -35,7 +35,7 @@ builder.Services.AddAuthentication(options =>
     googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 })
 // Configure JWT Authentication
-.AddJwtBearer(options =>
+.AddJwtBearer(async options =>
 {
     options.Authority = "https://accounts.google.com"; // Google authority
     options.TokenValidationParameters = new TokenValidationParameters
@@ -44,7 +44,9 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = "https://accounts.google.com",
         ValidateAudience = true,
         ValidAudience = builder.Configuration["Authentication:Google:ClientId"], // Google Client ID
-        ValidateLifetime = true
+        ValidateLifetime = true,
+        IssuerSigningKeys = await new GoogleKeyFetcher().GetGooglePublicKeysAsync() // Fetch and set signing keys
+
     };
 });
 
