@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Sotex.Api.Mapping;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,13 +41,12 @@ builder.Services.AddAuthentication(options =>
     options.Authority = "https://accounts.google.com"; // Google authority
     options.TokenValidationParameters = new TokenValidationParameters
     {
+        ValidateIssuerSigningKey = true,
         ValidateIssuer = true,
         ValidIssuer = "https://accounts.google.com",
         ValidateAudience = true,
         ValidAudience = builder.Configuration["Authentication:Google:ClientId"], // Google Client ID
         ValidateLifetime = true,
-        IssuerSigningKeys = await new GoogleKeyFetcher().GetGooglePublicKeysAsync() // Fetch and set signing keys
-
     };
 });
 
