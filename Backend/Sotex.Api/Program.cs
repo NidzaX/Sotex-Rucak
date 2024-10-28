@@ -37,15 +37,14 @@ builder.Services.AddAuthentication(options =>
 // Configure JWT Authentication
 .AddJwtBearer(options =>
 {
+    options.Authority = "https://accounts.google.com"; // Google authority
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
+        ValidIssuer = "https://accounts.google.com",
         ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = "http://localhost:5105", // Your valid issuer
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"])) // Updated to use JwtSettings
+        ValidAudience = builder.Configuration["Authentication:Google:ClientId"], // Google Client ID
+        ValidateLifetime = true
     };
 });
 
