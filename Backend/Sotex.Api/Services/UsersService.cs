@@ -34,6 +34,25 @@ namespace Sotex.Api.Services
         {
             string token = dto.Token;
 
+            // Decode the token payload without validation to check expiration.
+            var jwtHandler = new JwtSecurityTokenHandler();
+            var jwtToken = jwtHandler.ReadToken(token) as JwtSecurityToken;
+            if (jwtToken == null)
+            {
+                throw new Exception("Invalid token format.");
+            }
+
+            // Check if the token is expired
+            var exp = jwtToken.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
+            if (long.TryParse(exp, out long expValue))
+            {
+                var expirationTime = DateTimeOffset.FromUnixTimeSeconds(expValue).UtcDateTime;
+                if (expirationTime < DateTime.UtcNow)
+                {
+                    throw new Exception("Google authentication failed: JWT has expired.");
+                }
+            }
+
             try
             {
                 GoogleJsonWebSignature.ValidationSettings validationSettings = new GoogleJsonWebSignature.ValidationSettings
@@ -64,6 +83,7 @@ namespace Sotex.Api.Services
             User retVal = await _userRepo.AddUserAsync(user);
             return retVal;
         }
+
 
 
         public async Task<string> LoginGoogleAsync(string email, string token)

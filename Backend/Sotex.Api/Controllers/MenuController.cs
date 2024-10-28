@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Sotex.Api.Interfaces;
 using Sotex.Api.Repo;
 
@@ -6,6 +7,7 @@ namespace Sotex.Api.Controllers
 {
     [Route("api/menus")]
     [ApiController]
+    [Authorize]
     public class MenuController : ControllerBase
     {
         private readonly IMenuService _menuService;
@@ -18,7 +20,7 @@ namespace Sotex.Api.Controllers
         }
 
         [HttpPost("parse-and-save-menu")]
-        public async Task<IActionResult> ParseAndSaveMenu(IFormFile file, [FromForm] string purpose, [FromForm] string email)
+        public async Task<IActionResult> ParseAndSaveMenu(IFormFile file, [FromForm] string purpose)
         {
             if (file == null || string.IsNullOrEmpty(purpose))
             {
@@ -27,20 +29,17 @@ namespace Sotex.Api.Controllers
 
             try
             {
-                //var userIdClaim = User.FindFirst("sub"); // I need to modify this using JWT.io when the user is logged in.....
-                //if (userIdClaim == null)
-                //{
-                //    return Unauthorized(new { error = "User is not authenticated." });
-                //}
-
-                //var userId = Guid.Parse(userIdClaim.Value); 
-                var user = await _userRepo.FindByEmailAsync(email);
-                if (user == null)
+                // Retrieve the user ID from JWT claims
+                var userIdClaim = User.FindFirst("sub");
+                if (userIdClaim == null)
                 {
-                    return NotFound(new { error = "User not found" });
+                    return Unauthorized(new { error = "User is not authenticated." });
                 }
 
-                var menu = await _menuService.ParseAndSaveMenuFromFileAsync(file, purpose, user.Id);
+                var userId = Guid.Parse(userIdClaim.Value);
+
+                // Pass the user ID to the service method
+                var menu = await _menuService.ParseAndSaveMenuFromFileAsync(file, purpose, userId);
                 return Ok(new { message = "Menu saved successfully", menu });
             }
             catch (Exception ex)
@@ -48,6 +47,7 @@ namespace Sotex.Api.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
 
     }
 }
