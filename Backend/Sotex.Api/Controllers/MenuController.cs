@@ -7,11 +7,11 @@ namespace Sotex.Api.Controllers
 {
     [Route("api/menus")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class MenuController : ControllerBase
     {
         private readonly IMenuService _menuService;
-        private readonly UserRepo _userRepo; // testing
+        private readonly UserRepo _userRepo; // testings
 
         public MenuController(IMenuService openAIService, UserRepo userRepo)
         {

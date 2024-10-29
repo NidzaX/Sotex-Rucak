@@ -30,25 +30,24 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddGoogle(googleOptions =>
+.AddJwtBearer(options =>
 {
-    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-})
-// Configure JWT Authentication
-.AddJwtBearer(async options =>
-{
-    options.Authority = "https://accounts.google.com"; // Google authority
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuerSigningKey = true,
         ValidateIssuer = true,
-        ValidIssuer = "https://accounts.google.com",
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["Authentication:Google:ClientId"], // Google Client ID
+        ValidateAudience = false,
         ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "http://localhost:5105",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
     };
+})
+.AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
+
 
 builder.Services.AddControllers();
 
