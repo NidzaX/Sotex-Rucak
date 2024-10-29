@@ -20,11 +20,13 @@ namespace Sotex.Api.Controllers
         }
 
         [HttpPost("parse-and-save-menu")]
-        public async Task<IActionResult> ParseAndSaveMenu(IFormFile file, [FromForm] string purpose)
+        public async Task<IActionResult> ParseAndSaveMenu(IFormFile file)
         {
-            if (file == null || string.IsNullOrEmpty(purpose))
+            string purpose = "vision";
+
+            if (file == null)
             {
-                return BadRequest(new { error = "File and purpose are required." });
+                return BadRequest(new { error = "File is required." });
             }
 
             try
