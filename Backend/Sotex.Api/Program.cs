@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Sotex.Api.Mapping;
 using Microsoft.Extensions.Options;
+using Sotex.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -125,6 +126,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
+    app.ApplyMigrations();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend v1"));
 }
 
