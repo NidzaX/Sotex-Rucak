@@ -1,0 +1,8 @@
+<div>
+    <h2>Upload Menu</h2>
+    <form (ngSubmit)="uploadMenu()" enctype="multipart/form-data">
+        <input type="file" (change)="onFileSelected($event)" required/>
+        <input tpye="text" [(ngModel)]="purpose" name="purpose" placeholder="Purpose" required/>
+        <button type="submit">Upload menu</button>
+    </form>
+</div>

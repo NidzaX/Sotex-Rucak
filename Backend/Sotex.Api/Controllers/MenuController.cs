@@ -7,7 +7,7 @@ namespace Sotex.Api.Controllers
 {
     [Route("api/menus")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class MenuController : ControllerBase
     {
         private readonly IMenuService _menuService;
@@ -30,7 +30,7 @@ namespace Sotex.Api.Controllers
             try
             {
                 // Retrieve the user ID from JWT claims
-                var userIdClaim = User.FindFirst("sub");
+                var userIdClaim = User.FindFirst("id");
                 if (userIdClaim == null)
                 {
                     return Unauthorized(new { error = "User is not authenticated." });
