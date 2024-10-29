@@ -51,5 +51,26 @@ namespace Sotex.Api.Controllers
         }
 
 
+        [HttpGet("get-menu-items")]
+        public async Task<IActionResult> GetMenuItems()
+        {
+            var userIdClaim = User.FindFirst("id");
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { error = "User is not authenticated." });
+            }
+
+            var userId = Guid.Parse(userIdClaim.Value);
+
+            try
+            {
+                var menuItems = await _menuService.ListMenuItemsAsync(userId);
+                return Ok(menuItems);
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

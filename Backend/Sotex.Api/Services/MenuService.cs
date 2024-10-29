@@ -13,7 +13,7 @@ using AutoMapper;
 using System.Globalization;
 using Sotex.Api.Dto.JsonResponseDto;
 using System.Text.RegularExpressions;
-
+using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 
 namespace Sotex.Api.Services
 {
@@ -171,6 +171,39 @@ namespace Sotex.Api.Services
                 var errorContent = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Error calling OpenAI API: {response.StatusCode} - {errorContent}");
             }
+        }
+
+        public async Task<MenuDto> ListMenuItemsAsync(Guid userId)
+        {
+            var menu = await _menuRepo.GetMenuByUserAsync(userId);
+
+            if (menu == null)
+            {
+                throw new InvalidOperationException("No menu found for this user");
+            }
+
+            Console.WriteLine($"Menu Dishes Count: {menu.Dishes.Count}");
+            Console.WriteLine($"Menu SideDishes Count: {menu.SideDishes.Count}");
+
+            var menuDto = new MenuDto();
+
+            foreach (var dish in menu.Dishes)
+            {
+                menuDto.Dishes.Add(new DishDto
+                {
+                    Name = dish.Name,
+                    Price = dish.Price.ToString()
+                });
+            }
+
+            foreach (var sideDish in menu.SideDishes)
+            {
+                menuDto.SideDishes.Add(new SideDishDto
+                {
+                    Name = sideDish.Name,
+                });
+            }
+            return menuDto;
         }
 
     }

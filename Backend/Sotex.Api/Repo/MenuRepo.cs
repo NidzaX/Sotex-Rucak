@@ -97,5 +97,14 @@ namespace Sotex.Api.Repo
             return await _projectDbContext.SideDishes
                 .FirstOrDefaultAsync(sd => sd.Id == sideDishId);
         }
+
+        public async Task<Menu> GetMenuByUserAsync(Guid userId)
+        {
+            return await _projectDbContext.Menus
+                .Where(x => x.UserId == userId)
+                .Include(x => x.Dishes)
+                .Include(x => x.SideDishes)
+                .FirstOrDefaultAsync();
+        }
     }
 }

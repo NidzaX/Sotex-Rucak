@@ -2,12 +2,9 @@
 
 namespace Sotex.Api.Dto.MenuDto
 {
-    public class DishDto
+    public class SideDishDto
     {
         [JsonProperty("name")]
         public string Name { get; set; }
-
-        [JsonProperty("price")]
-        public string Price { get; set; }
     }
 }
