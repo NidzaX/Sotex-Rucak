@@ -25,9 +25,17 @@ namespace Sotex.Api.Controllers
                 return BadRequest("Order data is required.");
             }
 
+            var userIdClaim = User.FindFirst("id");
+            if(userIdClaim == null)
+            {
+                return Unauthorized(new { error = "User is not authorized" });
+            }
+
+            var userId = Guid.Parse(userIdClaim.Value);
+
             try
             {
-                var orderId = await _ordersService.AddOrderAsync(orderDto);
+                var orderId = await _ordersService.AddOrderAsync(orderDto, userId);
                 return Ok(new { OrderId = orderId });
             }
             catch (InvalidOperationException ex)
@@ -64,7 +72,7 @@ namespace Sotex.Api.Controllers
             }
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("getUserOrders/{userId}")]
         public async Task<IActionResult> GetUserOrders(Guid userId)
         {
             try

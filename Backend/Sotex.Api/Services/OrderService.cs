@@ -38,15 +38,15 @@ namespace Sotex.Api.Services
         }
 
 
-        public async Task<Guid> AddOrderAsync(NewOrderDto orderDto)
+        public async Task<Guid> AddOrderAsync(NewOrderDto orderDto, Guid userId)
         {
             if (orderDto == null)
                 throw new ArgumentNullException(nameof(orderDto), "Order data cannot be null.");
 
-            var user = await _userRepo.FindUserByUsernameAsync(orderDto.Username);
+            var user = await _userRepo.FindAsync(userId);
             if (user == null)
             {
-                _logger.LogWarning("User with username {Username} not found.", orderDto.Username);
+                _logger.LogWarning("User with username {Username} not found.", user?.Username);
                 throw new Exception("User not found");
             }
 
@@ -198,7 +198,6 @@ namespace Sotex.Api.Services
                 await transaction.RollbackAsync();
                 throw; // Rethrow the exception after rollback
             }
-
         }
 
         public async Task<bool> CancelOrderAsync(Guid orderId)
