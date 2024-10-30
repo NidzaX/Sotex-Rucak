@@ -1,7 +1,10 @@
-<div>
+<div *ngIf="!isMenuAvailable">
     <h2>Upload Menu</h2>
     <form (ngSubmit)="uploadMenu()" enctype="multipart/form-data">
-        <input type="file" (change)="onFileSelected($event)" required/>
+        <input tpye="file" (change)="onFileSelected($event)" required/>
         <button type="submit">Upload menu</button>
     </form>
+</div>
+<div *ngIf="isMenuAvailable">
+    <app-menu-items></app-menu-items>
 </div>
