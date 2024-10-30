@@ -73,15 +73,23 @@ namespace Sotex.Api.Controllers
             }
         }
 
-        [HttpGet("get-menu-status")]
-        public async Task<IActionResult> GetMenuStats(Guid userId)
-        {
-            var menu = _menuRepo.GetMenuByUserAsync(userId);
-            if(menu == null)
-            {
-                return NotFound("No available menus");
-            }
-        }
+        //[HttpGet("get-menu-status")]
+        //public async Task<IActionResult> GetMenuStats(Guid userId)
+        //{
+        //    var menu = _menuRepo.GetMenuByUserAsync(userId);
+
+        //    if(menu == null)
+        //    {
+        //        return NotFound("No available menus");
+        //    }
+
+        //    var now = DateTime.Now;
+        //    var isActive = menu.
+
+        //    return Ok({
+               
+        //    })
+        //}
 
     }
 }

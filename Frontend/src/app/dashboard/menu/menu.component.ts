@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -10,28 +10,17 @@ import { Router } from '@angular/router';
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css'
 })
-export class MenuComponent implements OnInit{
+export class MenuComponent {
   selectedFile: File | null = null;
   uploadedMenu: any = null;
-  isMenuAvailable: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {}
-
-  ngOnInit() {
-    this.checkMenuStatus();
-  }
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
     if(file){
       this.selectedFile = file;
     }
-  }
-
-  checkMenuStatus() {
-    const headers = new HttpHeaders({
-      Authorizations: `Bearer ${localStorage.getItem('authToken')}`
-    });
   }
 
   uploadMenu() {
