@@ -72,8 +72,10 @@ namespace Sotex.Api.Controllers
         }
 
         [HttpGet("get-menu-status")]
-        public async Task<IActionResult> GetMenuStats(Guid userId)
+        public async Task<IActionResult> GetMenuStats()
         {
+            var userIdClaim = User.FindFirst("id");
+            var userId = Guid.Parse(userIdClaim.Value);
             try
             {
                 var (isActive, isActiveTomorrow) = await _menuService.GetMenuStatusAsync(userId);

@@ -217,8 +217,9 @@ namespace Sotex.Api.Services
             var now = DateTime.UtcNow;
             var isActive = menu.StartDate <= now && menu.EndDate >= now;
 
-            var tomorrow = now.AddHours(23).AddMinutes(59).AddSeconds(59);
-            var isActiveTomorrow = menu.StartDate <= tomorrow && menu.EndDate <= tomorrow;
+            var startOfTomorrow = now.Date.AddDays(1);
+            var endOfTomorrow = startOfTomorrow.AddDays(1).AddSeconds(-1);
+            var isActiveTomorrow = menu.StartDate <= endOfTomorrow && menu.EndDate >= startOfTomorrow;
 
 
             return (isActive, isActiveTomorrow);
