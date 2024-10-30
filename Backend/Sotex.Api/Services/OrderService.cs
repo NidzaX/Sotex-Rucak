@@ -43,6 +43,13 @@ namespace Sotex.Api.Services
             if (orderDto == null)
                 throw new ArgumentNullException(nameof(orderDto), "Order data cannot be null.");
 
+            if ((orderDto.Dishes == null || !orderDto.Dishes.Any(d => d.DishQuantity > 0)) &&
+                (orderDto.SideDishes == null || !orderDto.SideDishes.Any(sd => sd.SideDishQuantity > 0)))
+            {
+                throw new InvalidOperationException("You must order at least one dish or side dish with a quantity greater than zero.");
+            }
+
+
             var user = await _userRepo.FindAsync(userId);
             if (user == null)
             {
@@ -80,7 +87,7 @@ namespace Sotex.Api.Services
             }
 
             // Process dishes
-            foreach (var dishDto in orderDto.Dishes)
+            foreach (var dishDto in orderDto.Dishes.Where(d => d.DishQuantity > 0))
             {
                 if (dishDto.DishId == Guid.Empty) continue; // Skip if no dish ID is provided
 
@@ -125,7 +132,7 @@ namespace Sotex.Api.Services
             }
 
             // Process side dishes
-            foreach (var sideDishDto in orderDto.SideDishes)
+            foreach (var sideDishDto in orderDto.SideDishes.Where(sd => sd.SideDishQuantity > 0))
             {
                 var sideDishEntity = await _menuRepo.FindSideDishByIdAsync(sideDishDto.SideDishId);
                 if (sideDishEntity == null)
