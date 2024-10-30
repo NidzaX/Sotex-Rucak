@@ -20,7 +20,8 @@ namespace Sotex.Api.Controllers
         [HttpPost("addOrder")]
         public async Task<IActionResult> AddOrder([FromBody] NewOrderDto orderDto)
         {
-            if (orderDto == null)
+            if (orderDto == null ||
+                (orderDto.Dishes == null && orderDto.SideDishes == null))
             {
                 return BadRequest("Order data is required.");
             }
