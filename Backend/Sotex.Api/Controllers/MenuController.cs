@@ -12,11 +12,12 @@ namespace Sotex.Api.Controllers
     {
         private readonly IMenuService _menuService;
         private readonly UserRepo _userRepo; // testings
-
-        public MenuController(IMenuService openAIService, UserRepo userRepo)
+        private readonly MenuRepo _menuRepo;
+        public MenuController(IMenuService openAIService, UserRepo userRepo, MenuRepo menuRepo)
         {
             _menuService = openAIService;
             _userRepo = userRepo; // testing
+            _menuRepo = menuRepo;
         }
 
         [HttpPost("parse-and-save-menu")]
@@ -69,6 +70,16 @@ namespace Sotex.Api.Controllers
             }catch(Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-menu-status")]
+        public async Task<IActionResult> GetMenuStats(Guid userId)
+        {
+            var menu = _menuRepo.GetMenuByUserAsync(userId);
+            if(menu == null)
+            {
+                return NotFound("No available menus");
             }
         }
 

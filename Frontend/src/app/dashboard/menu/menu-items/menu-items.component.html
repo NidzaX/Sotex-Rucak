@@ -1,0 +1,22 @@
+<div>
+    <h2>Menu Items</h2>
+    <div *ngIf="menuItems?.dishes?.length > 0">
+        <h3>Dishes</h3>
+        <ul>
+            <li *ngFor="let dish of menuItems.dishes">
+                {{ dish.name }} - {{ dish.price }}
+            </li>
+        </ul>
+    </div>
+    <div *ngIf="menuItems?.sideDishes?.length > 0">
+        <h3>Side Dishes</h3>
+        <ul>
+            <li *ngFor="let sideDish of menuItems.sideDishes">
+                {{ sideDish.name }}
+            </li>
+        </ul>
+    </div>
+    <div *ngIf="!(menuItems?.dishes?.length || menuItems?.sideDishes?.length)">
+        <p>No menu items found.</p>
+    </div>
+</div>

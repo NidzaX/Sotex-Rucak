@@ -9,8 +9,18 @@ namespace Sotex.Api.Model
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsActiveTomorrow { get; set; }
+        private bool _isActive;
+        private bool _isActiveTomorrow;
+        public bool IsActive
+        {
+            get => DateTime.UtcNow >=StartDate && DateTime.UtcNow <= EndDate;
+            set => _isActive = value;
+        }
+        public bool IsActiveTomorrow
+        {
+            get => DateTime.UtcNow.AddDays(1).Date >= StartDate && DateTime.UtcNow.AddDays(1) <= EndDate;
+            set => _isActiveTomorrow = value;
+        }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string SpecialOffer { get; set; }
