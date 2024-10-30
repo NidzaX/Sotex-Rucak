@@ -143,7 +143,7 @@ namespace Sotex.Api.Services
 
                     var now = DateTime.UtcNow;
                     var startDate = now.AddDays(1).Date;
-                    var endDate = startDate.AddHours(23). AddMinutes(59).AddSeconds(59);
+                    var endDate = startDate.AddHours(23).AddMinutes(59).AddSeconds(59);
                     menuDto.StartDate = startDate;
                     menuDto.EndDate = endDate;
 
@@ -206,5 +206,22 @@ namespace Sotex.Api.Services
             return menuDto;
         }
 
+        public async Task<(bool IsActive, bool IsActiveTomorrow)> GetMenuStatusAsync(Guid userId)
+        {
+            var menu = await _menuRepo.GetMenuByUserAsync(userId);
+            if (menu == null)
+            {
+                throw new InvalidOperationException("Menu not found for this user.");
+            }
+
+            var now = DateTime.UtcNow;
+            var isActive = menu.StartDate <= now && menu.EndDate >= now;
+
+            var tomorrow = now.AddHours(23).AddMinutes(59).AddSeconds(59);
+            var isActiveTomorrow = menu.StartDate <= tomorrow && menu.EndDate <= tomorrow;
+
+
+            return (isActive, isActiveTomorrow);
+        }
     }
 }

@@ -7,6 +7,8 @@ namespace Sotex.Api.Interfaces
     public interface IMenuService
     {
        Task<Menu> ParseAndSaveMenuFromFileAsync(IFormFile file, string purpose, Guid userId);
-        Task<MenuDto> ListMenuItemsAsync(Guid userId);
+       Task<MenuDto> ListMenuItemsAsync(Guid userId);
+       Task<(bool IsActive, bool IsActiveTomorrow)> GetMenuStatusAsync(Guid userId);
+
     }
 }

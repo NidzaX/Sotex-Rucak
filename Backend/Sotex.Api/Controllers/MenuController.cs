@@ -12,12 +12,10 @@ namespace Sotex.Api.Controllers
     {
         private readonly IMenuService _menuService;
         private readonly UserRepo _userRepo; // testings
-        private readonly MenuRepo _menuRepo;
-        public MenuController(IMenuService openAIService, UserRepo userRepo, MenuRepo menuRepo)
+        public MenuController(IMenuService openAIService, UserRepo userRepo)
         {
             _menuService = openAIService;
             _userRepo = userRepo; // testing
-            _menuRepo = menuRepo;
         }
 
         [HttpPost("parse-and-save-menu")]
@@ -73,23 +71,21 @@ namespace Sotex.Api.Controllers
             }
         }
 
-        //[HttpGet("get-menu-status")]
-        //public async Task<IActionResult> GetMenuStats(Guid userId)
-        //{
-        //    var menu = _menuRepo.GetMenuByUserAsync(userId);
-
-        //    if(menu == null)
-        //    {
-        //        return NotFound("No available menus");
-        //    }
-
-        //    var now = DateTime.Now;
-        //    var isActive = menu.
-
-        //    return Ok({
-               
-        //    })
-        //}
+        [HttpGet("get-menu-status")]
+        public async Task<IActionResult> GetMenuStats(Guid userId)
+        {
+            try
+            {
+                var (isActive, isActiveTomorrow) = await _menuService.GetMenuStatusAsync(userId);
+                return Ok(new {isActive, isActiveTomorrow});
+            }catch(InvalidOperationException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }catch(Exception ex)
+            {
+                return StatusCode(500, new {error = ex.Message});
+            }
+        }
 
     }
 }
