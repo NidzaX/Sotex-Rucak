@@ -1,0 +1,24 @@
+<div>
+    <h2>Review Your Order</h2>
+  
+    <div *ngIf="order?.dishes?.length > 0">
+      <h3>Dishes</h3>
+      <ul>
+        <li *ngFor="let dish of order.dishes">
+          {{ dish.name }} - Quantity: {{ dish.quantity }}
+        </li>
+      </ul>
+    </div>
+  
+    <div *ngIf="order?.sideDishes?.length > 0">
+      <h3>Side Dishes</h3>
+      <ul>
+        <li *ngFor="let sideDish of order.sideDishes">
+          {{ sideDish.name }} - Quantity: {{ sideDish.quantity }}
+        </li>
+      </ul>
+    </div>
+  
+    <button (click)="submitOrder()">Submit Order</button>
+  </div>
+  

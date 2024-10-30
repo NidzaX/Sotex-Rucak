@@ -35,6 +35,11 @@ export class MenuItemsComponent implements OnInit {
   }
 
   reviewOrder() {
-    this.router.navigate(['/dashboard/menu/menu-items/review']);
+    const order = {
+      dishes: this.menuItems.dishes.filter((dish: any) => dish.quantity > 0),
+      sideDishes: this.menuItems.sideDishes.filter((sideDish: any) => sideDish.quantity > 0)
+    };
+
+    this.router.navigate(['/dashboard/menu/menu-items/review'], {state: {order}});
   }
 }
