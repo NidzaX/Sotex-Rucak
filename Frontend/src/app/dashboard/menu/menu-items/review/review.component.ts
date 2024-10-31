@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OrderService } from '../order.service';
+import { MenuService } from '../menu.service';
 
 
 @Component({
@@ -15,8 +16,15 @@ import { OrderService } from '../order.service';
 export class ReviewComponent implements OnInit {
   order: any;
   isOrderEmpty: boolean = false;
+  dishesData: any[] = [];
+  sideDishesData: any[] = [];
 
-  constructor(private router: Router, private http: HttpClient, private orderService: OrderService) {
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private orderService: OrderService,
+    private menuService: MenuService,
+  ) {
     const navigation = this.router.getCurrentNavigation();
     console.log('Current Navigation:', navigation);
     this.order = navigation?.extras?.state?.['order'];
@@ -35,10 +43,21 @@ export class ReviewComponent implements OnInit {
       this.isOrderEmpty = true;
       this.router.navigate(['/dashboard/menu/menu-items']);
     }
+
+    this.menuService.getDishes().subscribe(dishes => {
+      this.dishesData = dishes;
+    });
+
+    this.menuService.getSideDishes().subscribe(sideDishes => {
+      this.sideDishesData = sideDishes;
+    })
   }
 
   submitOrder() {
     console.log('Submit Order clicked');
+    
+    console.log('Order Dishes:', this.order.dishes);
+    console.log('Order SideDishes:', this.order.sideDishes);
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${localStorage.getItem('authToken')}`,
@@ -46,16 +65,22 @@ export class ReviewComponent implements OnInit {
     });
 
     const orderDto = {
-      dishes: this.order.dishes.map((d: any) => ({
-        dishId: d.id,
-        dishQuantity: d.quantity,
-      })),
-      sideDishes: this.order.sideDishes.map((sd: any) => ({
-        sideDishId: sd.id,
-        sideDishQuantity: sd.quantity,
-      })),
+      dishes: this.order.dishes.map((d: any) => {
+        const dishId = this.getDishIdByName(d.name); 
+        return { 
+          dishId: dishId, 
+          dishQuantity: d.quantity 
+        };
+      }),
+      sideDishes: this.order.sideDishes.map((sd: any) => {
+        const sideDishId = this.getSideDishIdByName(sd.name); 
+        return { 
+          sideDishId: sideDishId,
+          sideDishQuantity: sd.quantity 
+        };
+      }),
     };
-    
+
     this.http
       .post('http://localhost:5105/api/orders/addOrder', orderDto, { headers })
       .subscribe({
@@ -69,5 +94,15 @@ export class ReviewComponent implements OnInit {
         },
         error: (error) => console.error('Error submitting order:', error),
       });
+  }
+
+  private getDishIdByName(name: string): string {
+    const dish = this.dishesData.find(d => d.name == name)
+    return dish ? dish.id : '';
+  }
+
+  private getSideDishIdByName(name: string): string {
+    const sideDish = this.sideDishesData.find(sd => sd.name == name)
+    return sideDish ? sideDish.id : ''
   }
 }
