@@ -4,6 +4,8 @@ namespace Sotex.Api.Dto.MenuDto
 {
     public class DishDto
     {
+        public Guid DishId { get; set; }
+
         [JsonProperty("name")]
         public string Name { get; set; }
 

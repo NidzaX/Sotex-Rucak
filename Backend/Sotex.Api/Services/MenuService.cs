@@ -191,6 +191,7 @@ namespace Sotex.Api.Services
             {
                 menuDto.Dishes.Add(new DishDto
                 {
+                    DishId = dish.Id,
                     Name = dish.Name,
                     Price = dish.Price.ToString()
                 });
@@ -200,6 +201,7 @@ namespace Sotex.Api.Services
             {
                 menuDto.SideDishes.Add(new SideDishDto
                 {
+                    SideDishId = sideDish.Id,
                     Name = sideDish.Name,
                 });
             }

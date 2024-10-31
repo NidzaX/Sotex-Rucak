@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -11,10 +11,17 @@ export class MenuService{
   constructor(private http: HttpClient) {}
 
   getDishes(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/dishes`);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+    });
+    return this.http.get<any>(this.apiUrl, { headers });
   }
-
+  
   getSideDishes(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/sideDishes`);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+    });
+    return this.http.get<any>(this.apiUrl, { headers });
   }
+  
 }

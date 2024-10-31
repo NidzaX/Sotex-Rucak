@@ -44,13 +44,15 @@ export class ReviewComponent implements OnInit {
       this.router.navigate(['/dashboard/menu/menu-items']);
     }
 
-    this.menuService.getDishes().subscribe(dishes => {
-      this.dishesData = dishes;
+    this.menuService.getDishes().subscribe(response => {
+      console.log("Dishes Data:", response.dishes);
+      this.dishesData = Array.isArray(response.dishes) ? response.dishes : [];
     });
-
-    this.menuService.getSideDishes().subscribe(sideDishes => {
-      this.sideDishesData = sideDishes;
-    })
+  
+    this.menuService.getSideDishes().subscribe(response => {
+      console.log("Side Dishes Data:", response.sideDishes);
+      this.sideDishesData = Array.isArray(response.sideDishes) ? response.sideDishes : [];
+    });
   }
 
   submitOrder() {
@@ -97,12 +99,20 @@ export class ReviewComponent implements OnInit {
   }
 
   private getDishIdByName(name: string): string {
-    const dish = this.dishesData.find(d => d.name == name)
-    return dish ? dish.id : '';
+    if (!Array.isArray(this.dishesData)) {
+      console.error('dishesData is not an array');
+      return '';
+    }
+    const dish = this.dishesData.find(d => d.name == name);
+    return dish ? dish.dishId : '';
   }
-
+  
   private getSideDishIdByName(name: string): string {
-    const sideDish = this.sideDishesData.find(sd => sd.name == name)
-    return sideDish ? sideDish.id : ''
+    if (!Array.isArray(this.sideDishesData)) {
+      console.error('sideDishesData is not an array');
+      return '';
+    }
+    const sideDish = this.sideDishesData.find(sd => sd.name == name);
+    return sideDish ? sideDish.sideDishId : '';
   }
 }
