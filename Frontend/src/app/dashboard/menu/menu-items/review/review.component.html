@@ -22,3 +22,6 @@
     <button (click)="submitOrder()">Submit Order</button>
   </div>
   
+  <div *ngIf="isOrderEmpty">
+    <p>Please select at least one dish or side dish before reviewing your order.</p>
+  </div>

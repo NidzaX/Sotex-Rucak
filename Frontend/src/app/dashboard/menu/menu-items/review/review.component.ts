@@ -11,18 +11,23 @@ import { Router } from '@angular/router';
   templateUrl: './review.component.html',
   styleUrl: './review.component.css'
 })
-export class ReviewComponent implements OnInit{
+export class ReviewComponent implements OnInit {
   order: any;
+  isOrderEmpty: boolean = false;
 
   constructor(private router: Router, private http: HttpClient) {
     const navigation = this.router.getCurrentNavigation();
+    console.log('Current Navigation:', navigation);
     this.order = navigation?.extras?.state?.['order'];
-
-    console.log('Received order:', this.order); 
+    console.log('Received order:', this.order);
   }
 
   ngOnInit() {
-    if (!this.order) {
+    if (!this.order || 
+      (!this.order.dishes || this.order.dishes.length === 0) &&
+      (!this.order.sideDishes || this.order.sideDishes.length === 0)) {
+      console.warn('Order is empty, redirecting back to menu items.');
+      this.isOrderEmpty = true;
       this.router.navigate(['/dashboard/menu/menu-items']);
     }
   }
