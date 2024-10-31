@@ -21,10 +21,12 @@ export class ReviewComponent implements OnInit {
     console.log('Current Navigation:', navigation);
     this.order = navigation?.extras?.state?.['order'];
     console.log('Received order:', this.order);
+    this.orderService.setOrder(this.order); 
   }
 
   ngOnInit() {
     this.order = this.orderService.getOrder();
+    console.log("Order in ReviewComponent:", this.order); 
 
     if (!this.order || 
       (!this.order.dishes || this.order.dishes.length === 0) &&
@@ -59,7 +61,11 @@ export class ReviewComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('Order submitted successfully:', response);
-          this.router.navigate(['/dashboard/menu/menu-items/order-success']);
+          this.router.navigate(['/dashboard/menu/menu-items/order-success'], 
+            {
+              state: { order: this.orderService.getOrder() }
+            }
+          );
         },
         error: (error) => console.error('Error submitting order:', error),
       });
