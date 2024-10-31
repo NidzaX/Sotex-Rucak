@@ -22,6 +22,7 @@
     </div>
 
     <button (click)="reviewOrder()">Review Order</button>
+    <button ngif="hasOrders" (click)="viewOrders()">My Orders</button>
     <router-outlet></router-outlet>
   </div>
   

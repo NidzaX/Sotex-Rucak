@@ -13,7 +13,6 @@ import { Router } from '@angular/router';
 })
 export class UserOrdersComponent implements OnInit{
   orders: any = [];
-  hasOrders: boolean = false;
 
   constructor(private http: HttpClient, private orderService: OrderService, private router: Router) {}
 
@@ -29,7 +28,6 @@ export class UserOrdersComponent implements OnInit{
       next: (response) => {
         this.orders = response;
         console.log('Fetched orders:', this.orders);
-        this.hasOrders = this.orders.length > 0;
       },
       error: (error) => console.error('Error fetching orders:', error)
     })
@@ -46,9 +44,5 @@ export class UserOrdersComponent implements OnInit{
         },
         error: (error) => console.error('Error fetching orders:', error)
       })
-  }
-
-  viewOrders() {
-    this.router.navigate(['dashboard/menu/menu-items/user-orders']);
   }
 }
