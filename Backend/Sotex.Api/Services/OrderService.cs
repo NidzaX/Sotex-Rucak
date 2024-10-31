@@ -147,11 +147,11 @@ namespace Sotex.Api.Services
 
                 if (menu.IsActive && menu.StartDate.Date == DateTime.UtcNow.Date)
                 {
-                    validUntil = DateTime.UtcNow.Date.AddHours(23).AddMinutes(59);
+                    validUntil = DateTime.UtcNow.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
                 }
                 else if (menu.IsActiveTomorrow && menu.StartDate.Date == DateTime.UtcNow.Date.AddDays(1))
                 {
-                    validUntil = DateTime.UtcNow.Date.AddDays(1).AddHours(23).AddMinutes(59);
+                    validUntil = DateTime.UtcNow.Date.AddDays(1).AddHours(23).AddMinutes(59).AddSeconds(59);
                 }
 
 

@@ -7,8 +7,8 @@
       <li *ngFor="let order of orders">
         <h4>Order ID: {{ order.id }}</h4>
         <p>Total Price: {{ order.totalPrice }}</p>
-        <p>Order Date: {{ order.orderDate }}</p>
-        <p>Valid Until: {{ order.validUntil }}</p>
+        <p>Order Date: {{ order.orderDate | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
+        <p>Valid Until: {{ order.validUntil | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
         <p>Status: {{ order.isCancelled ? 'Cancelled' : 'Active' }}</p>
         <button (click)="cancelOrder(order.id)" [disabled]="order.isCancelled">Cancel Order</button>
       </li>
