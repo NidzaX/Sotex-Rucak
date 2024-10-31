@@ -5,6 +5,7 @@ import { ErrorComponent } from './error/error.component';
 import { MenuComponent } from './dashboard/menu/menu.component';
 import { MenuItemsComponent } from './dashboard/menu/menu-items/menu-items.component';
 import { ReviewComponent } from './dashboard/menu/menu-items/review/review.component';
+import { OrderSuccessComponent } from './dashboard/menu/menu-items/review/order-success/order-success.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -12,7 +13,7 @@ export const routes: Routes = [
         { path: 'menu', component: MenuComponent, children: [
             { path: 'menu-items', component: MenuItemsComponent }, 
             { path: 'menu-items/review', component: ReviewComponent }, 
-            { path: '', redirectTo: 'menu-items', pathMatch: 'full' },
+            { path: 'menu-items/review/order-success', component: OrderSuccessComponent },
             { path: '', redirectTo: 'menu-items', pathMatch: 'full' } 
         ] },
         { path: '', redirectTo: 'menu', pathMatch: 'full' } 

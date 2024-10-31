@@ -1,0 +1,26 @@
+<div>
+    <h2>Order Successful!</h2>
+    <p>Your order has been placed successfully. Thank you for your purchase!</p>
+  
+    <h3>Your Order Details:</h3>
+    <div *ngIf="order?.dishes?.length > 0">
+      <h4>Dishes:</h4>
+      <ul>
+        <li *ngFor="let dish of order.dishes">
+          {{ dish.name }} - Quantity: {{ dish.quantity }}
+        </li>
+      </ul>
+    </div>
+  
+    <div *ngIf="order?.sideDishes?.length > 0">
+      <h4>Side Dishes:</h4>
+      <ul>
+        <li *ngFor="let sideDish of order.sideDishes">
+          {{ sideDish.name }} - Quantity: {{ sideDish.quantity }}
+        </li>
+      </ul>
+    </div>
+  
+    <button (click)="router.navigate(['/dashboard/menu/menu-items'])">Go Back to Menu</button>
+</div>
+  

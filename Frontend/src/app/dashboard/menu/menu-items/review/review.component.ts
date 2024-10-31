@@ -88,7 +88,7 @@ export class ReviewComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('Order submitted successfully:', response);
-          this.router.navigate(['/dashboard/menu/menu-items/order-success'], 
+          this.router.navigate(['/dashboard/menu/menu-items/review/order-success'], 
             {
               state: { order: this.orderService.getOrder() }
             }
