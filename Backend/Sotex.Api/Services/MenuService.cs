@@ -141,11 +141,11 @@ namespace Sotex.Api.Services
                         UserId = userId 
                     };
 
-                    var now = DateTime.UtcNow;
+                    var now = DateTime.Now;
                     var startDate = now.AddDays(1).Date;
                     var endDate = startDate.AddHours(23).AddMinutes(59).AddSeconds(59);
-                    menuDto.StartDate = startDate;
-                    menuDto.EndDate = endDate;
+                    menuDto.StartDate = TimeZoneInfo.ConvertTimeToUtc(startDate);
+                    menuDto.EndDate = TimeZoneInfo.ConvertTimeToUtc(endDate);
 
                     menuDto.IsActive = false;
                     menuDto.IsActiveTomorrow = startDate == now.AddDays(1).Date;
