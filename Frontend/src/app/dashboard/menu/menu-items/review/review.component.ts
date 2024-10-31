@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { OrderService } from '../order.service';
 
 
 @Component({
@@ -15,7 +16,7 @@ export class ReviewComponent implements OnInit {
   order: any;
   isOrderEmpty: boolean = false;
 
-  constructor(private router: Router, private http: HttpClient) {
+  constructor(private router: Router, private http: HttpClient, private orderService: OrderService) {
     const navigation = this.router.getCurrentNavigation();
     console.log('Current Navigation:', navigation);
     this.order = navigation?.extras?.state?.['order'];
@@ -23,6 +24,8 @@ export class ReviewComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.order = this.orderService.getOrder();
+
     if (!this.order || 
       (!this.order.dishes || this.order.dishes.length === 0) &&
       (!this.order.sideDishes || this.order.sideDishes.length === 0)) {

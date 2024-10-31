@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { OrderService } from './order.service';
 
 @Component({
   selector: 'app-menu-items',
@@ -15,7 +16,7 @@ export class MenuItemsComponent implements OnInit {
   menuItems: any = [];
 
   // Inject HttpClient and Router
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private orderService: OrderService) {}
 
   ngOnInit() {
     this.fetchMenuItems();
@@ -40,6 +41,7 @@ export class MenuItemsComponent implements OnInit {
       sideDishes: this.menuItems.sideDishes.filter((sideDish: any) => sideDish.quantity > 0)
     };
 
+    this.orderService.setOrder(order);
     this.router.navigate(['/dashboard/menu/menu-items/review'], {state: {order}});
   }
 }
