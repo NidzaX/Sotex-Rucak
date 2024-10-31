@@ -21,6 +21,8 @@ export class OrderSuccessComponent implements OnInit{
     if(!this.order || (!this.order.dishes && !this.order.sideDishes)) {
       console.warn('No order found, redirecting to menu items.');
       this.router.navigate(['/dashboard/menu/menu-items']);
+    } else {
+      this.orderService.setOrder(this.order);
     }
   }
 }

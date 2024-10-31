@@ -6,6 +6,7 @@ import { MenuComponent } from './dashboard/menu/menu.component';
 import { MenuItemsComponent } from './dashboard/menu/menu-items/menu-items.component';
 import { ReviewComponent } from './dashboard/menu/menu-items/review/review.component';
 import { OrderSuccessComponent } from './dashboard/menu/menu-items/review/order-success/order-success.component';
+import { UserOrdersComponent } from './dashboard/menu/menu-items/user-orders/user-orders.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -14,6 +15,7 @@ export const routes: Routes = [
             { path: 'menu-items', component: MenuItemsComponent }, 
             { path: 'menu-items/review', component: ReviewComponent }, 
             { path: 'menu-items/review/order-success', component: OrderSuccessComponent },
+            { path: 'user-orders', component: UserOrdersComponent }, 
             { path: '', redirectTo: 'menu-items', pathMatch: 'full' } 
         ] },
         { path: '', redirectTo: 'menu', pathMatch: 'full' } 

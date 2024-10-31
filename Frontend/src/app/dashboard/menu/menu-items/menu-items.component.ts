@@ -14,12 +14,15 @@ import { OrderService } from './order.service';
 })
 export class MenuItemsComponent implements OnInit {
   menuItems: any = [];
+  orders: any = [];
+  hasOrders: boolean = false;
 
   // Inject HttpClient and Router
   constructor(private http: HttpClient, private router: Router, private orderService: OrderService) {}
 
   ngOnInit() {
     this.fetchMenuItems();
+    this.fetchUserOrders();
   }
 
   fetchMenuItems() {
@@ -35,6 +38,19 @@ export class MenuItemsComponent implements OnInit {
       });
   }
 
+  fetchUserOrders() {
+    const headers = { Authorization: `Bearer ${localStorage.getItem('authToken')}` };
+    this.http
+      .get<any[]>('http://localhost:5105/api/orders/getUserOrders', { headers })
+      .subscribe({
+        next: (response) => {
+          this.orders = response;
+          this.hasOrders = this.orders.length > 0; 
+        },
+        error: (error) => console.error('Error fetching orders:', error)
+      });
+  }
+
   reviewOrder() {
     const order = {
       dishes: this.menuItems.dishes.filter((dish: any) => dish.quantity > 0),
@@ -43,5 +59,9 @@ export class MenuItemsComponent implements OnInit {
 
     this.orderService.setOrder(order);
     this.router.navigate(['/dashboard/menu/menu-items/review'], {state: {order}});
+  }
+
+  viewOrders() {
+    this.router.navigate(['/dashboard/menu/user-orders']); 
   }
 }
