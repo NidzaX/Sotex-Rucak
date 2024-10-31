@@ -10,10 +10,9 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'dashboard', component: DashboardComponent, children: [
         { path: 'menu', component: MenuComponent, children: [
-            { path: 'menu-items', component: MenuItemsComponent, children: [
-                { path: 'review', component: ReviewComponent }, 
-                { path: '', redirectTo: '', pathMatch: 'full' } 
-            ] },
+            { path: 'menu-items', component: MenuItemsComponent }, 
+            { path: 'menu-items/review', component: ReviewComponent }, 
+            { path: '', redirectTo: 'menu-items', pathMatch: 'full' },
             { path: '', redirectTo: 'menu-items', pathMatch: 'full' } 
         ] },
         { path: '', redirectTo: 'menu', pathMatch: 'full' } 
