@@ -49,9 +49,17 @@ namespace Sotex.Api.Controllers
             }
         }
 
-        [HttpPost("cancelOrder/{orderId}")]
+        [HttpPost("cancelOrder")]
         public async Task<IActionResult> CancelOrder(Guid orderId)
         {
+            var userIdClaim = User.FindFirst("id");
+            if(userIdClaim == null)
+            {
+                return Unauthorized(new { error = "User is not authorized" });
+            }
+
+            var userId = Guid.Parse(userIdClaim.Value);
+
             try
             {
                 var result = await _ordersService.CancelOrderAsync(orderId);
@@ -73,9 +81,16 @@ namespace Sotex.Api.Controllers
             }
         }
 
-        [HttpGet("getUserOrders/{userId}")]
-        public async Task<IActionResult> GetUserOrders(Guid userId)
+        [HttpGet("getUserOrders")]
+        public async Task<IActionResult> GetUserOrders()
         {
+            var userIdClaim = User.FindFirst("id");
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { error = "User is not authorized" });
+            }
+
+            var userId = Guid.Parse(userIdClaim.Value);
             try
             {
                 var orders = await _ordersService.GetAllOrdersAsync(userId);
