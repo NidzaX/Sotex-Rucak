@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MenuItemsComponent } from "./menu-items/menu-items.component";
 import { CommonModule } from '@angular/common';
 import { MenuService } from '../../../../core/services/menu.service';
+import { AddMenuDto } from '../../../../core/models/AddMenuDto';
 
 @Component({
   selector: 'app-menu',
@@ -14,7 +15,7 @@ import { MenuService } from '../../../../core/services/menu.service';
 })
 export class MenuComponent implements OnInit {
   selectedFile: File | null = null;
-  uploadedMenu: any = null;
+  uploadedMenu: AddMenuDto | null = null;
   isMenuAvailable: boolean = false;
 
   @Output() menuStatusChanged = new EventEmitter<boolean>();
@@ -56,7 +57,8 @@ export class MenuComponent implements OnInit {
     formData.append('file', this.selectedFile);
 
     this.menuService.uploadMenu(formData).subscribe({
-      next: (response) => {
+      next: (response: AddMenuDto) => {
+        this.uploadedMenu = response;
         console.log("Menu uploaded successfully:", response);
         this.isMenuAvailable = true;
         this.menuStatusChanged.emit(this.isMenuAvailable);

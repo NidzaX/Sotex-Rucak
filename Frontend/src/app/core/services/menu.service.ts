@@ -1,4 +1,3 @@
-// src/app/core/services/menu.service.ts
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -33,8 +32,8 @@ export class MenuService {
     return this.http.get<any>(this.menuStatusUrl, { headers: this.getHeaders() });
   }
 
-  uploadMenu(formData: FormData): Observable<any>{
-    return this.http.post<any>(this.uploadUrl, formData, { headers: this.getHeaders() });
+  uploadMenu(formData: FormData): Observable<AddMenuDto>{
+    return this.http.post<AddMenuDto>(this.uploadUrl, formData, { headers: this.getHeaders() });
   }
 
 }

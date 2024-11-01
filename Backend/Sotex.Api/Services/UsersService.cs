@@ -125,9 +125,6 @@ namespace Sotex.Api.Services
                 throw new Exception($"Login failed: {e.Message}");
             }
         }
-
-
-
     }
 }
 
