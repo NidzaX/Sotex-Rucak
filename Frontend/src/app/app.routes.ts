@@ -7,11 +7,9 @@ import { MenuItemsComponent } from './dashboard/menu/menu-items/menu-items.compo
 import { ReviewComponent } from './dashboard/menu/menu-items/review/review.component';
 import { OrderSuccessComponent } from './dashboard/menu/menu-items/review/order-success/order-success.component';
 import { UserOrdersComponent } from './dashboard/menu/menu-items/user-orders/user-orders.component';
-import { RegisterComponent } from './register/register.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent},
     { path: 'dashboard', component: DashboardComponent, children: [
         { path: 'menu', component: MenuComponent, children: [
             { path: 'menu-items', component: MenuItemsComponent }, 

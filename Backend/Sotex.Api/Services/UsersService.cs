@@ -70,15 +70,14 @@ namespace Sotex.Api.Services
             if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Email))
                 throw new Exception("Invalid data");
 
-            User user = _mapper.Map<User>(dto);
-            user.Password = "";  // No password since it's a Google login.
-
-            // Ensure no existing user with the same email
             var existingUser = await _userRepo.FindByEmailAsync(dto.Email);
             if (existingUser != null)
             {
-                throw new Exception("A user with this email already exists.");
+                return existingUser;
             }
+
+            User user = _mapper.Map<User>(dto);
+            user.Password = "";  // No password since it's a Google login.
 
             User retVal = await _userRepo.AddUserAsync(user);
             return retVal;
