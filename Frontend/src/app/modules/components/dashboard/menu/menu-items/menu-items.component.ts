@@ -1,24 +1,28 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { OrderService } from '../../../../../core/services/order.service';
+import { MenuService } from '../../../../../core/services/menu.service'; // Import the MenuService
+import { GetAllOrdersDto } from '../../../../../core/models/GetAllOrdersDto';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { OrderService } from '../../../../../core/services/order.service';
 
 @Component({
   selector: 'app-menu-items',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports:[RouterModule, CommonModule, FormsModule],
   templateUrl: './menu-items.component.html',
   styleUrls: ['./menu-items.component.css']
 })
 export class MenuItemsComponent implements OnInit {
-  menuItems: any = [];
-  orders: any = [];
+  menuItems: any = [];                  
+  orders: GetAllOrdersDto[] = [];      
   hasOrders: boolean = false;
 
-  // Inject HttpClient and Router
-  constructor(private http: HttpClient, private router: Router, private orderService: OrderService) {}
+  constructor(
+    private router: Router,
+    private orderService: OrderService,
+    private menuService: MenuService 
+  ) {}
 
   ngOnInit() {
     this.fetchMenuItems();
@@ -26,29 +30,24 @@ export class MenuItemsComponent implements OnInit {
   }
 
   fetchMenuItems() {
-    const headers = { Authorization: `Bearer ${localStorage.getItem('authToken')}` };
-    this.http
-      .get('http://localhost:5105/api/menus/get-menu-items', { headers })
-      .subscribe({
-        next: (response) => {
-          this.menuItems = response;
-          console.log('Fetched menu items:', this.menuItems);
-        },
-        error: (error) => console.error('Error fetching menu items:', error),
-      });
+    this.menuService.getDishes().subscribe({
+      next: (response) => {
+        this.menuItems = response;
+        console.log('Fetched menu items:', this.menuItems);
+      },
+      error: (error) => console.error('Error fetching menu items:', error),
+    });
   }
 
   fetchUserOrders() {
-    const headers = { Authorization: `Bearer ${localStorage.getItem('authToken')}` };
-    this.http
-      .get<any[]>('http://localhost:5105/api/orders/getUserOrders', { headers })
-      .subscribe({
-        next: (response) => {
-          this.orders = response;
-          this.hasOrders = this.orders.length > 0; 
-        },
-        error: (error) => console.error('Error fetching orders:', error)
-      });
+    this.orderService.getUserOrders().subscribe({
+      next: (response: GetAllOrdersDto[]) => {
+        this.orders = response;
+        this.hasOrders = this.orders.length > 0; 
+        console.log('Fetched user orders:', this.orders);
+      },
+      error: (error) => console.error('Error fetching orders:', error)
+    });
   }
 
   reviewOrder() {
@@ -58,7 +57,7 @@ export class MenuItemsComponent implements OnInit {
     };
 
     this.orderService.setOrder(order);
-    this.router.navigate(['/dashboard/menu/menu-items/review'], {state: {order}});
+    this.router.navigate(['/dashboard/menu/menu-items/review'], { state: { order } });
   }
 
   viewOrders() {
