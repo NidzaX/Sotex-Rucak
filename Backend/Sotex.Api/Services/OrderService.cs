@@ -102,13 +102,13 @@ namespace Sotex.Api.Services
                     throw new InvalidOperationException("Cannot place order: one or more dishes are not available.");
                 }
 
-                if (menu.IsActive && menu.StartDate.Date == DateTime.UtcNow.Date)
+                if (menu.IsActive)
                 {
-                    validUntil = DateTime.UtcNow.Date.AddHours(23).AddMinutes(59); // End of today
+                    validUntil = menu.EndDate;
                 }
-                else if (menu.IsActiveTomorrow && menu.StartDate.Date == DateTime.UtcNow.Date.AddDays(1))
+                else if (menu.IsActiveTomorrow)
                 {
-                    validUntil = DateTime.UtcNow.Date.AddDays(1).AddHours(23).AddMinutes(59); // End of tomorrow
+                    validUntil = menu.EndDate;
                 }
 
                 for (int i = 0; i < dishDto.DishQuantity; i++)
@@ -145,13 +145,13 @@ namespace Sotex.Api.Services
                     throw new InvalidOperationException("Cannot place order: one or more dishes are not available.");
                 }
 
-                if (menu.IsActive && menu.StartDate.Date == DateTime.UtcNow.Date)
+                if (menu.IsActive)
                 {
-                    validUntil = DateTime.UtcNow.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+                    validUntil = menu.EndDate;
                 }
-                else if (menu.IsActiveTomorrow && menu.StartDate.Date == DateTime.UtcNow.Date.AddDays(1))
+                else if (menu.IsActiveTomorrow)
                 {
-                    validUntil = DateTime.UtcNow.Date.AddDays(1).AddHours(23).AddMinutes(59).AddSeconds(59);
+                    validUntil = menu.EndDate;
                 }
 
 
@@ -271,6 +271,5 @@ namespace Sotex.Api.Services
 
             return orders;
         }
-
     }
 }
