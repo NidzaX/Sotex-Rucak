@@ -35,7 +35,6 @@ namespace Sotex.Api.Repo
 
             return await _projectDbContext.Menus
                 .AnyAsync(m =>
-                    m.UserId == userId &&
                     (m.StartDate <= now && m.EndDate >= now) ||
                     (m.StartDate <= endOfTomorrow && m.EndDate >= tomorrow)
                 );
@@ -98,13 +97,12 @@ namespace Sotex.Api.Repo
                 .FirstOrDefaultAsync(sd => sd.Id == sideDishId);
         }
 
-        public async Task<Menu> GetMenuByUserAsync(Guid userId)
+        public async Task<List<Menu>> GetAllMenusAsync()
         {
             return await _projectDbContext.Menus
-                .Where(x => x.UserId == userId)
                 .Include(x => x.Dishes)
                 .Include(x => x.SideDishes)
-                .FirstOrDefaultAsync();
+                .ToListAsync();
         }
     }
 }

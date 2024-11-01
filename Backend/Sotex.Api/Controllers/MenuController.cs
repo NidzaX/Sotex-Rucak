@@ -63,7 +63,7 @@ namespace Sotex.Api.Controllers
 
             try
             {
-                var menuItems = await _menuService.ListMenuItemsAsync(userId);
+                var menuItems = await _menuService.ListMenuItemsAsync();
                 return Ok(menuItems);
             }catch(Exception ex)
             {
@@ -72,13 +72,18 @@ namespace Sotex.Api.Controllers
         }
 
         [HttpGet("get-menu-status")]
-        public async Task<IActionResult> GetMenuStats()
+        public async Task<IActionResult> GetMenuStatus()
         {
             var userIdClaim = User.FindFirst("id");
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { error = "User is not authenticated." });
+            }
+
             var userId = Guid.Parse(userIdClaim.Value);
             try
             {
-                var (isActive, isActiveTomorrow) = await _menuService.GetMenuStatusAsync(userId);
+                var (isActive, isActiveTomorrow) = await _menuService.GetMenuStatusAsync();
                 return Ok(new {isActive, isActiveTomorrow});
             }catch(InvalidOperationException ex)
             {

@@ -173,21 +173,28 @@ namespace Sotex.Api.Services
             }
         }
 
-        public async Task<MenuDto> ListMenuItemsAsync(Guid userId)
+        public async Task<MenuDto> ListMenuItemsAsync()
         {
-            var menu = await _menuRepo.GetMenuByUserAsync(userId);
+            var menus = await _menuRepo.GetAllMenusAsync();
 
-            if (menu == null)
+            if (menus == null || !menus.Any())
             {
                 throw new InvalidOperationException("No menu found for this user");
             }
 
-            Console.WriteLine($"Menu Dishes Count: {menu.Dishes.Count}");
-            Console.WriteLine($"Menu SideDishes Count: {menu.SideDishes.Count}");
+            var activeMenu = menus.FirstOrDefault(menu => menu.IsActive || menu.IsActiveTomorrow);
+
+            if(activeMenu == null)
+            {
+                throw new InvalidOperationException("No active or scheduled menu found. Please upload a new menu.");
+            }
+
+            Console.WriteLine($"Menu Dishes Count: {activeMenu.Dishes.Count}");
+            Console.WriteLine($"Menu SideDishes Count: {activeMenu.SideDishes.Count}");
 
             var menuDto = new MenuDto();
 
-            foreach (var dish in menu.Dishes)
+            foreach (var dish in activeMenu.Dishes)
             {
                 menuDto.Dishes.Add(new DishDto
                 {
@@ -197,7 +204,7 @@ namespace Sotex.Api.Services
                 });
             }
 
-            foreach (var sideDish in menu.SideDishes)
+            foreach (var sideDish in activeMenu.SideDishes)
             {
                 menuDto.SideDishes.Add(new SideDishDto
                 {
@@ -208,21 +215,35 @@ namespace Sotex.Api.Services
             return menuDto;
         }
 
-        public async Task<(bool IsActive, bool IsActiveTomorrow)> GetMenuStatusAsync(Guid userId)
+        public async Task<(bool IsActive, bool IsActiveTomorrow)> GetMenuStatusAsync()
         {
-            var menu = await _menuRepo.GetMenuByUserAsync(userId);
-            if (menu == null)
+            var menus = await _menuRepo.GetAllMenusAsync();
+
+            bool isActive = false;
+            bool isActiveTomorrow = false;
+
+            foreach(var menu in menus)
             {
-                throw new InvalidOperationException("Menu not found for this user.");
+                if(menu.IsActive)
+                {
+                    isActive = true;
+                }
+
+                if(menu.IsActiveTomorrow)
+                {
+                    isActiveTomorrow = true;
+                }
+
+                if(isActive && isActiveTomorrow)
+                {
+                    break;
+                }
             }
 
-            var now = DateTime.UtcNow;
-            var isActive = menu.StartDate <= now && menu.EndDate >= now;
-
-            var startOfTomorrow = now.Date.AddDays(1);
-            var endOfTomorrow = startOfTomorrow.AddDays(1).AddSeconds(-1);
-            var isActiveTomorrow = menu.StartDate <= endOfTomorrow && menu.EndDate >= startOfTomorrow;
-
+            if(!isActive && !isActiveTomorrow)
+            {
+                throw new InvalidOperationException("No active menu found. Please upload a new menu.");
+            }
 
             return (isActive, isActiveTomorrow);
         }

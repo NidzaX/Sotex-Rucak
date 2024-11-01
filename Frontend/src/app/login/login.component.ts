@@ -43,7 +43,24 @@ export class LoginComponent {
       if (result.token) {
         localStorage.setItem('authToken', result.token);
         console.log('Token stored in localStorage:', result.token); // Log what you're storing
-        this.router.navigate(['/dashboard']);
+        
+        // Check menu status after storing the token
+        this.checkMenuStatus().subscribe({
+          next: (response: any) => {
+            if (response.isActive || response.isActiveTomorrow) {
+              // Redirect to menu items if there's an active menu
+              this.router.navigate(['/dashboard/menu/menu-items']);
+            } else {
+              // Otherwise, redirect to the upload menu page
+              this.router.navigate(['/dashboard/menu']);
+            }
+          },
+          error: (error) => {
+            console.error('Error checking menu status:', error);
+            // Handle error case, possibly redirect to an error page or show a message
+            this.router.navigate(['/error']);
+          }
+        });
       } else {
         console.error('Token is undefined in the response');
         // Handle the case when Token is not in the response
@@ -60,5 +77,10 @@ export class LoginComponent {
   
       this.router.navigate(['/error']);
     }
+  }
+
+  checkMenuStatus() {
+    const headers = { Authorization: `Bearer ${localStorage.getItem('authToken')}` };
+    return this.http.get('http://localhost:5105/api/menus/get-menu-status', { headers });
   }
 }
