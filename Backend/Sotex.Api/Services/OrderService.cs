@@ -110,6 +110,10 @@ namespace Sotex.Api.Services
                 {
                     validUntil = menu.EndDate;
                 }
+                else
+                {
+                    throw new InvalidOperationException("Cannot place order: The menu is not active or scheduled for tomorrow.");
+                }
 
                 for (int i = 0; i < dishDto.DishQuantity; i++)
                 {
@@ -153,7 +157,10 @@ namespace Sotex.Api.Services
                 {
                     validUntil = menu.EndDate;
                 }
-
+                else
+                {
+                    throw new InvalidOperationException("Cannot place order: The menu is not active or scheduled for tomorrow.");
+                }
 
                 for (int i = 0; i < sideDishDto.SideDishQuantity; i++)
                 {
