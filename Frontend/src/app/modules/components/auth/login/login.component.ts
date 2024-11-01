@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { GoogleRegisterDto } from '../core/models/google-register.dto';
-import { AuthService } from '../core/services/auth.service';
-import { MenuService } from '../core/services/menu.service';
+import { GoogleRegisterDto } from '../../../../core/models/google-register.dto';
+import { AuthService } from '../../../../core/services/auth.service';
+import { MenuService } from '../../../../core/services/menu.service';
 
 @Component({
   selector: 'app-login',

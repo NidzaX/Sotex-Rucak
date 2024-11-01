@@ -3,7 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { OrderService } from './order.service';
+import { OrderService } from '../../../../../core/services/order.service';
 
 @Component({
   selector: 'app-menu-items',

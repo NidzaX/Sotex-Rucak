@@ -1,12 +1,13 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { ErrorComponent } from './error/error.component';
-import { MenuComponent } from './dashboard/menu/menu.component';
-import { MenuItemsComponent } from './dashboard/menu/menu-items/menu-items.component';
-import { ReviewComponent } from './dashboard/menu/menu-items/review/review.component';
-import { OrderSuccessComponent } from './dashboard/menu/menu-items/review/order-success/order-success.component';
-import { UserOrdersComponent } from './dashboard/menu/menu-items/user-orders/user-orders.component';
+import { ErrorComponent } from './modules/components/error/error.component';
+import { UserOrdersComponent } from './modules/components/dashboard/menu/menu-items/user-orders/user-orders.component';
+import { OrderSuccessComponent } from './modules/components/dashboard/menu/menu-items/review/order-success/order-success.component';
+import { MenuItemsComponent } from './modules/components/dashboard/menu/menu-items/menu-items.component';
+import { ReviewComponent } from './modules/components/dashboard/menu/menu-items/review/review.component';
+import { MenuComponent } from './modules/components/dashboard/menu/menu.component';
+import { DashboardComponent } from './modules/components/dashboard/dashboard.component';
+import { LoginComponent } from './modules/components/auth/login/login.component';
+
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },

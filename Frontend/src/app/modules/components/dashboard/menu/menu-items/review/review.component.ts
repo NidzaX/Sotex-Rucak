@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { OrderService } from '../order.service';
-import { MenuService } from '../../../../core/services/menu.service';
+import { OrderService } from '../../../../../../core/services/order.service';
+import { MenuService } from '../../../../../../core/services/menu.service';
 
 
 
