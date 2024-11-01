@@ -26,6 +26,6 @@ export class DashboardComponent {
       this.router.navigate(['/dashboard/menu']); 
   } else {
       this.router.navigate(['/dashboard/menu/menu-items']); 
-  }
+   }
   }
 }
