@@ -1,6 +1,5 @@
 <div>
-    <h2>Menu</h2>
-  
+    <h2>Menu</h2>  
     <div *ngIf="menuItems?.dishes?.length > 0">
       <h3>Dishes</h3>
       <ul>
@@ -24,5 +23,7 @@
     <button (click)="reviewOrder()">Review Order</button>
     <button ngif="hasOrders" (click)="viewOrders()">My Orders</button>
     <router-outlet></router-outlet>
+    <!-- <button (click)="signOut()">Sign Out</button> -->
+
   </div>
   

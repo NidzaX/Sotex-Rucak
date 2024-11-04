@@ -8,6 +8,7 @@ import { NewOrderDto } from '../models/NewOrderDto';
   providedIn: 'root'
 })
 export class OrderService {
+  private orderSubmitted = false;
   private order: any = null;
   private readonly apiUrl = 'http://localhost:5105/api/orders';
   private readonly getOrdersUrl = `${this.apiUrl}/getUserOrders`;
@@ -42,5 +43,13 @@ export class OrderService {
   submitOrder(orderDto: NewOrderDto): Observable<any> {
     const headers = this.getHeaders();
     return this.http.post(`${this.addOrderUrl}`, orderDto, {headers: this.getHeaders()})
+  }
+
+  setOrderSubmitted(status: boolean) {
+    this.orderSubmitted = status;
+  }
+
+  isOrderSubmitted(): boolean {
+    return this.orderSubmitted;
   }
 }

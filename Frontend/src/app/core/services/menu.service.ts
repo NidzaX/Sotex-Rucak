@@ -29,6 +29,7 @@ export class MenuService {
   }
 
   checkMenuStatus(): Observable<any> {
+    console.log('Checking menu status...'); 
     return this.http.get<any>(this.menuStatusUrl, { headers: this.getHeaders() });
   }
 

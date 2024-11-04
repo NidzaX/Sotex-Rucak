@@ -5,6 +5,7 @@ import { MenuItemsComponent } from "./menu-items/menu-items.component";
 import { CommonModule } from '@angular/common';
 import { MenuService } from '../../../../core/services/menu.service';
 import { AddMenuDto } from '../../../../core/models/AddMenuDto';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-menu',
@@ -20,7 +21,7 @@ export class MenuComponent implements OnInit {
 
   @Output() menuStatusChanged = new EventEmitter<boolean>();
 
-  constructor(private menuService: MenuService, private router: Router) {} 
+  constructor(private menuService: MenuService, private router: Router, private authService: AuthService) {} 
 
   ngOnInit(): void {
     this.checkMenuStatus();

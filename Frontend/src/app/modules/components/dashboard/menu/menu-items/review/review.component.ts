@@ -78,12 +78,17 @@ export class ReviewComponent implements OnInit {
 
     this.orderService.submitOrder(orderDto).subscribe({
       next: (response) => {
+        this.orderService.setOrderSubmitted(true);
         this.router.navigate(['/dashboard/menu/menu-items/review/order-success'], {
           state: { order: this.orderService.getOrder() }
         });
       },
       error: (error) => console.error('Error submitting order:', error)
     });
+  }
+
+  goBackToMenu() {
+    this.router.navigate(['/dashboard/menu/menu-items']); 
   }
 
   private getDishIdByName(name: string): string {

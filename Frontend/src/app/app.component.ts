@@ -1,12 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { LoginComponent } from './modules/components/auth/login/login.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './core/interceptor/authInterceptor';
 
 @Component({
   selector: 'app-root',
   standalone: true,
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+  }],
   imports: [RouterOutlet, LoginComponent],
+  template:'<router-outlet></router-outlet>',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

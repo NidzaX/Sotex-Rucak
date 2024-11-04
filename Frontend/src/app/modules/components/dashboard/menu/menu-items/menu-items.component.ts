@@ -5,6 +5,7 @@ import { MenuService } from '../../../../../core/services/menu.service'; // Impo
 import { GetAllOrdersDto } from '../../../../../core/models/GetAllOrdersDto';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-menu-items',
@@ -21,7 +22,8 @@ export class MenuItemsComponent implements OnInit {
   constructor(
     private router: Router,
     private orderService: OrderService,
-    private menuService: MenuService 
+    private menuService: MenuService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
@@ -63,4 +65,8 @@ export class MenuItemsComponent implements OnInit {
   viewOrders() {
     this.router.navigate(['/dashboard/menu/user-orders']); 
   }
+
+  // signOut() {
+  //   this.authService.signOut();
+  // }
 }
