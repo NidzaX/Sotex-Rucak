@@ -1,17 +1,16 @@
 <div>
-    <h2>Your Orders</h2>
-    <div *ngIf="orders.length === 0">
+  <h2>Your Orders</h2>
+  <div *ngIf="orders.length === 0">
       <p>No orders found. Please place an order to see your orders here.</p>
-    </div>
-    <ul *ngIf="orders.length > 0">
-      <li *ngFor="let order of orders">
-        <h4>Order ID: {{ order.id }}</h4>
-        <p>Total Price: {{ order.totalPrice }}</p>
-        <p>Order Date: {{ order.orderDate | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
-        <p>Valid Until: {{ order.validUntil | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
-        <p>Status: {{ order.isCancelled ? 'Cancelled' : 'Active' }}</p>
-        <button (click)="cancelOrder(order.id)" [disabled]="order.isCancelled">Cancel Order</button>
-      </li>
-    </ul>
   </div>
-  
+  <ul *ngIf="orders.length > 0">
+      <li *ngFor="let order of orders" [ngClass]="{'inactive-order': isOrderInactive(order)}">
+          <h4>Order ID: {{ order.id }}</h4>
+          <p>Total Price: {{ order.totalPrice }}</p>
+          <p>Order Date: {{ order.orderDate | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
+          <p>Valid Until: {{ order.validUntil | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
+          <p>Status: {{ order.isCancelled ? 'Cancelled' : 'Active' }}</p>
+          <button (click)="cancelOrder(order.id)" [disabled]="order.isCancelled">Cancel Order</button>
+      </li>
+  </ul>
+</div>

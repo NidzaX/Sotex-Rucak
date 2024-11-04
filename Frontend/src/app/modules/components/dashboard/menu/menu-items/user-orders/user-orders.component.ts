@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   styleUrl: './user-orders.component.css'
 })
 export class UserOrdersComponent implements OnInit{
-  orders: any = [];
+  orders: any[] = [];
 
   constructor(private orderService: OrderService, private router: Router) {}
 
@@ -38,5 +38,9 @@ export class UserOrdersComponent implements OnInit{
       },
       error: (error) => console.error('Error cancelling order:', error)
     });
+  }
+
+  isOrderInactive(order: any): boolean {
+    return order.isCancelled || new Date(order.validUntil) < new Date();
   }
 }
