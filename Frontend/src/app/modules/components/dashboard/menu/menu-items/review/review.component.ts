@@ -1,11 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OrderService } from '../../../../../../core/services/order.service';
 import { MenuService } from '../../../../../../core/services/menu.service';
-
-
+import { NewOrderDto } from '../../../../../../core/models/NewOrderDto';
 
 @Component({
   selector: 'app-review',
@@ -22,7 +20,6 @@ export class ReviewComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private http: HttpClient,
     private orderService: OrderService,
     private menuService: MenuService,
   ) {
@@ -62,12 +59,7 @@ export class ReviewComponent implements OnInit {
     console.log('Order Dishes:', this.order.dishes);
     console.log('Order SideDishes:', this.order.sideDishes);
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json',
-    });
-
-    const orderDto = {
+    const orderDto: NewOrderDto = {
       dishes: this.order.dishes.map((d: any) => {
         const dishId = this.getDishIdByName(d.name); 
         return { 
@@ -84,19 +76,14 @@ export class ReviewComponent implements OnInit {
       }),
     };
 
-    this.http
-      .post('http://localhost:5105/api/orders/addOrder', orderDto, { headers })
-      .subscribe({
-        next: (response) => {
-          console.log('Order submitted successfully:', response);
-          this.router.navigate(['/dashboard/menu/menu-items/review/order-success'], 
-            {
-              state: { order: this.orderService.getOrder() }
-            }
-          );
-        },
-        error: (error) => console.error('Error submitting order:', error),
-      });
+    this.orderService.submitOrder(orderDto).subscribe({
+      next: (response) => {
+        this.router.navigate(['/dashboard/menu/menu-items/review/order-success'], {
+          state: { order: this.orderService.getOrder() }
+        });
+      },
+      error: (error) => console.error('Error submitting order:', error)
+    });
   }
 
   private getDishIdByName(name: string): string {

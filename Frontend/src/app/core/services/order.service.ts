@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GetAllOrdersDto } from '../models/GetAllOrdersDto';
 import { Observable } from 'rxjs';
+import { NewOrderDto } from '../models/NewOrderDto';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class OrderService {
   private order: any = null;
   private readonly apiUrl = 'http://localhost:5105/api/orders';
   private readonly getOrdersUrl = `${this.apiUrl}/getUserOrders`;
-  private readonly cancelOrderUrl = `${this.apiUrl}/cancelOrder`;
+  private readonly addOrderUrl = `${this.apiUrl}/addOrder`;
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
@@ -36,5 +37,10 @@ export class OrderService {
   cancelOrder(orderId: string): Observable<any> {
     const headers = this.getHeaders();
     return this.http.post(`${this.apiUrl}/cancelOrder?orderId=${orderId}`, {}, { headers });
+  }
+
+  submitOrder(orderDto: NewOrderDto): Observable<any> {
+    const headers = this.getHeaders();
+    return this.http.post(`${this.addOrderUrl}`, orderDto, {headers: this.getHeaders()})
   }
 }
