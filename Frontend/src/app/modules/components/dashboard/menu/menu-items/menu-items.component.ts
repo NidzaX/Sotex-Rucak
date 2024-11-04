@@ -59,6 +59,11 @@ export class MenuItemsComponent implements OnInit {
       sideDishes: this.menuItems.sideDishes.filter((sideDish: any) => sideDish.quantity > 0)
     };
 
+    if(order.dishes.length === 0 && order.sideDishes.length === 0) {
+      alert('Please select at least one dish or side dish before reviewing your order.');
+      return;
+    }
+
     this.orderService.setOrder(order);
     this.router.navigate(['/dashboard/menu/menu-items/review'], { state: { order } });
   }

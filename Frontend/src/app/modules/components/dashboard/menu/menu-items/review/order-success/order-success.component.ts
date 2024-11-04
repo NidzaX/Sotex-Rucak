@@ -22,7 +22,7 @@ export class OrderSuccessComponent implements OnInit{
       console.warn('No order found, redirecting to menu items.');
       this.router.navigate(['/dashboard/menu/menu-items']);
     } else {
-      this.orderService.setOrder(this.order);
+      this.orderService.clearOrder();
     }
   }
 }

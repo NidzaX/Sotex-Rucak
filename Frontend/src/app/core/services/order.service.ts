@@ -52,4 +52,8 @@ export class OrderService {
   isOrderSubmitted(): boolean {
     return this.orderSubmitted;
   }
+  
+  clearOrder() {
+    this.order = null;
+  }
 }
