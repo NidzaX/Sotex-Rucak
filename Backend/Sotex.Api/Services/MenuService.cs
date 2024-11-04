@@ -240,10 +240,10 @@ namespace Sotex.Api.Services
                 }
             }
 
-            if(!isActive && !isActiveTomorrow)
-            {
-                throw new InvalidOperationException("No active menu found. Please upload a new menu.");
-            }
+            //if(!isActive && !isActiveTomorrow)
+            //{
+            //    throw new InvalidOperationException("No active menu found. Please upload a new menu.");
+            //}
 
             return (isActive, isActiveTomorrow);
         }

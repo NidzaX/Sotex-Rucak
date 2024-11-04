@@ -10,6 +10,7 @@ export class OrderService {
   private order: any = null;
   private readonly apiUrl = 'http://localhost:5105/api/orders';
   private readonly getOrdersUrl = `${this.apiUrl}/getUserOrders`;
+  private readonly cancelOrderUrl = `${this.apiUrl}/cancelOrder`;
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
@@ -30,5 +31,10 @@ export class OrderService {
 
   getUserOrders(): Observable<GetAllOrdersDto[]> {
     return this.http.get<GetAllOrdersDto[]>(this.getOrdersUrl, {headers: this.getHeaders()})
+  }
+
+  cancelOrder(orderId: string): Observable<any> {
+    const headers = this.getHeaders();
+    return this.http.post(`${this.apiUrl}/cancelOrder?orderId=${orderId}`, {}, { headers });
   }
 }

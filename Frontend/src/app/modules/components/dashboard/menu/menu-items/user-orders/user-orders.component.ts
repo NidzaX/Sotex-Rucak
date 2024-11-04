@@ -14,35 +14,29 @@ import { Router } from '@angular/router';
 export class UserOrdersComponent implements OnInit{
   orders: any = [];
 
-  constructor(private http: HttpClient, private orderService: OrderService, private router: Router) {}
+  constructor(private orderService: OrderService, private router: Router) {}
 
   ngOnInit(): void {
     this.fetchUserOrders();
   }
 
   fetchUserOrders() {
-    const headers = {Authorization: `Bearer ${localStorage.getItem('authToken')}`};
-    this.http
-    .get('http://localhost:5105/api/orders/getUserOrders', { headers })
-      .subscribe({
-      next: (response) => {
-        this.orders = response;
-        console.log('Fetched orders:', this.orders);
-      },
-      error: (error) => console.error('Error fetching orders:', error)
-    })
+   this.orderService.getUserOrders().subscribe({
+    next: (response) => {
+      this.orders = response;
+      console.log('Fetched users:', this.orders);
+    },
+    error: (error) => console.error('Error fetching orders:', error)
+   });
   }
 
   cancelOrder(orderId: string) {
-    const headers = {Authorization: `Bearer ${localStorage.getItem('authToken')}`};
-    this.http
-    this.http.post(`http://localhost:5105/api/orders/cancelOrder?orderId=${orderId}`, {}, { headers })
-      .subscribe({
-        next: (response) => {
-          console.log('Order cancelled:', response);
-          this.fetchUserOrders();
-        },
-        error: (error) => console.error('Error fetching orders:', error)
-      })
+    this.orderService.cancelOrder(orderId).subscribe({
+      next: (response) => {
+        console.log('Order cancelled', response);
+        this.fetchUserOrders();
+      },
+      error: (error) => console.error('Error cancelling order:', error)
+    });
   }
 }
