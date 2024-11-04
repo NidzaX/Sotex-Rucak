@@ -6,11 +6,12 @@ import { GetAllOrdersDto } from '../../../../../core/models/GetAllOrdersDto';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../../core/services/auth.service';
+import { LogoutComponent } from "../../../auth/logout/logout.component";
 
 @Component({
   selector: 'app-menu-items',
   standalone: true,
-  imports:[RouterModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule, LogoutComponent],
   templateUrl: './menu-items.component.html',
   styleUrls: ['./menu-items.component.css']
 })
@@ -66,7 +67,4 @@ export class MenuItemsComponent implements OnInit {
     this.router.navigate(['/dashboard/menu/user-orders']); 
   }
 
-  // signOut() {
-  //   this.authService.signOut();
-  // }
 }

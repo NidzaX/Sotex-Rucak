@@ -22,8 +22,8 @@
 
     <button (click)="reviewOrder()">Review Order</button>
     <button ngif="hasOrders" (click)="viewOrders()">My Orders</button>
-    <router-outlet></router-outlet>
-    <!-- <button (click)="signOut()">Sign Out</button> -->
+    <app-logout></app-logout>
 
+    <router-outlet></router-outlet>
   </div>
   

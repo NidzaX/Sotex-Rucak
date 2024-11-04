@@ -28,6 +28,11 @@ export class LoginComponent {
     const email = decodedToken.email;
     const username = decodedToken.username;
 
+    if(this.authService.isAuthenticated()) {
+      console.warn('Alredy authenticated.');
+      await this.authService.signOut();
+    }
+
     const formDataRegister: GoogleRegisterDto = {
       username,
       email,
@@ -36,12 +41,6 @@ export class LoginComponent {
     };
 
     const formDataLogin = { email, token };
-
-    if (!this.authService.isAuthenticated()) {
-      console.error('Session has expired, redirecting to login');
-      this.router.navigate(['/login']);
-      return;
-  }
 
     try {
       await this.authService.registerWithGoogle(formDataRegister);

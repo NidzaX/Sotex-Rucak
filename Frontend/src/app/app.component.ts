@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { LoginComponent } from './modules/components/auth/login/login.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './core/interceptor/authInterceptor';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -19,8 +20,12 @@ import { AuthInterceptor } from './core/interceptor/authInterceptor';
 })
 export class AppComponent implements OnInit{
   title = 'Frontend';
+  isLoggedIn: boolean = false;
+  
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
+    this.isLoggedIn = this.authService.isAuthenticated();
     this.refreshPage();
   }
 
