@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LoginComponent } from './modules/components/auth/login/login.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './core/interceptor/authInterceptor';
 import { AuthService } from './core/services/auth.service';
@@ -8,17 +7,16 @@ import { AuthService } from './core/services/auth.service';
 @Component({
   selector: 'app-root',
   standalone: true,
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],  // Fixed the styleUrls syntax
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
     multi: true
   }],
-  imports: [RouterOutlet, LoginComponent],
-  template:'<router-outlet></router-outlet>',
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [RouterOutlet]  // Imports needed for RouterOutlet
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'Frontend';
   isLoggedIn: boolean = false;
   
@@ -29,12 +27,12 @@ export class AppComponent implements OnInit{
     this.refreshPage();
   }
 
-  refreshPage(){
-   if(!localStorage.getItem('pageRefreshed')) {
-    localStorage.setItem('pageRefreshed', 'true');
-    location.reload();
-   } else {
-    localStorage.removeItem('pageRefreshed');
-   }
+  refreshPage() {
+    if (!localStorage.getItem('pageRefreshed')) {
+      localStorage.setItem('pageRefreshed', 'true');
+      location.reload();
+    } else {
+      localStorage.removeItem('pageRefreshed');
+    }
   }
 }

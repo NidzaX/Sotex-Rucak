@@ -114,7 +114,7 @@ namespace Sotex.Api.Services
                 if (match.Success)
                 {
                     string jsonPart = match.Value;
-                    Console.WriteLine("Extracted JSON: " + jsonPart);  // Log extracted JSON
+                    Console.WriteLine("Extracted JSON: " + jsonPart);  
 
                     var menuData = JsonConvert.DeserializeObject<AddMenuDto>(jsonPart);
 

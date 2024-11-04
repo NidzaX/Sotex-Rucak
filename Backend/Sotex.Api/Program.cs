@@ -104,7 +104,8 @@ builder.Services.AddSingleton(mapper);
 
 // Configure Database Context
 builder.Services.AddDbContext<ProjectDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("ProjectDatabase")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("ProjectDatabase"))
+    .LogTo(s => System.Diagnostics.Debug.WriteLine(s)));
 
 // Configure Repositories and Services
 builder.Services.AddScoped<UserRepo>();
