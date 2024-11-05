@@ -37,15 +37,19 @@ export class MenuComponent implements OnInit {
   checkMenuStatus() {
     this.menuService.checkMenuStatus().subscribe({
       next: (response: any) => {
-        console.log(response);
-        this.isMenuAvailable = response.isActive || response.isActiveTomorrow; 
-        this.menuStatusChanged.emit(this.isMenuAvailable);
-        if (!this.isMenuAvailable) {
-          console.log('Menu is not available');
+        console.log('Response from checkMenuStatus:', response);
+        if (response.isActive || response.isActiveTomorrow) {
+          this.router.navigate(['/dashboard/menu/menu-items']);
+        } else {
+          this.router.navigate(['/dashboard/menu']);
         }
       },
-      error: (error) => console.error('Error checking menu status:', error)
+      error: (error) => {
+        console.error('Error checking menu status:', error);
+        this.router.navigate(['/error']);
+      },
     });
+    
   }
 
   uploadMenu() {

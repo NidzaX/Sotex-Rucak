@@ -7,10 +7,6 @@ import { AddMenuDto } from '../models/AddMenuDto';
   providedIn: 'root'
 })
 export class MenuService {
-  private readonly apiUrl = 'http://localhost:5105/api/menus';
-  private readonly menuStatusUrl = `${this.apiUrl}/get-menu-status`;
-  private readonly menuItemsUrl = `${this.apiUrl}/get-menu-items`;
-  private readonly uploadUrl = `${this.apiUrl}/parse-and-save-menu`;
 
   constructor(private http: HttpClient) {}
 
@@ -21,20 +17,22 @@ export class MenuService {
   }
 
   getDishes(): Observable<any> {
-    return this.http.get<any>(this.menuItemsUrl, { headers: this.getHeaders() });
+    return this.http.get<any>('/api/menus/get-menu-items', { headers: this.getHeaders() });
   }
 
   getSideDishes(): Observable<any> {
-    return this.http.get<any>(this.menuItemsUrl, { headers: this.getHeaders() });
+    return this.http.get<any>('/api/menus/get-menu-items', { headers: this.getHeaders() });
   }
 
   checkMenuStatus(): Observable<any> {
-    console.log('Checking menu status...'); 
-    return this.http.get<any>(this.menuStatusUrl, { headers: this.getHeaders() });
-  }
+    console.log('Checking menu status...');
+    return this.http.get<any>('api/menus/get-menu-status', {
+      headers: this.getHeaders(),
+      responseType: 'json' as const 
+    });
+  }  
 
-  uploadMenu(formData: FormData): Observable<AddMenuDto>{
-    return this.http.post<AddMenuDto>(this.uploadUrl, formData, { headers: this.getHeaders() });
+  uploadMenu(formData: FormData): Observable<AddMenuDto> {
+    return this.http.post<AddMenuDto>('api/menus/parse-and-save-menu', formData, { headers: this.getHeaders() });
   }
-
 }

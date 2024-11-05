@@ -23,7 +23,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 if (error instanceof HttpErrorResponse) {
                     if (error.status === 401 || error.status === 403) {
                         console.log('Redirecting to login due to unauthorized or forbidden error');
-                        localStorage.removeItem('authToken'); // Clear the token
+                        localStorage.removeItem('authToken'); 
                         this.router.navigate(['/login']);
                     }
                 }

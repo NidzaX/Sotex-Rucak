@@ -44,12 +44,11 @@ export class LoginComponent {
 
     try {
       await this.authService.registerWithGoogle(formDataRegister);
-
       const loginResult = await this.authService.signinWithGoogle(formDataLogin);
-
-      if (loginResult.token) {
+    
+      if (loginResult && loginResult.token) {
         localStorage.setItem('authToken', loginResult.token);
-
+    
         this.menuService.checkMenuStatus().subscribe({
           next: (response: any) => {
             if (response.isActive || response.isActiveTomorrow) {
@@ -58,14 +57,19 @@ export class LoginComponent {
               this.router.navigate(['/dashboard/menu']);
             }
           },
-          error: () => this.router.navigate(['/error']),
+          error: (error) => {
+            console.error('Error checking menu status:', error);
+            this.router.navigate(['/error']);
+          },
         });
       } else {
-        console.error('Token is undefined in the response');
+        console.error('Login failed, no token in response');
+        this.router.navigate(['/error']);
       }
     } catch (error: any) {
       console.error('Error during registration/login:', error);
       this.router.navigate(['/error']);
     }
+    
   }
 }
