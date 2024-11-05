@@ -10,29 +10,20 @@ export class MenuService {
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-    });
-  }
-
   getDishes(): Observable<any> {
-    return this.http.get<any>('/api/menus/get-menu-items', { headers: this.getHeaders() });
+    return this.http.get<any>('/api/menus/get-menu-items');
   }
 
   getSideDishes(): Observable<any> {
-    return this.http.get<any>('/api/menus/get-menu-items', { headers: this.getHeaders() });
+    return this.http.get<any>('/api/menus/get-menu-items');
   }
 
   checkMenuStatus(): Observable<any> {
     console.log('Checking menu status...');
-    return this.http.get<any>('api/menus/get-menu-status', {
-      headers: this.getHeaders(),
-      responseType: 'json' as const 
-    });
-  }  
+    return this.http.get<any>('/api/menus/get-menu-status');
+  }
 
   uploadMenu(formData: FormData): Observable<AddMenuDto> {
-    return this.http.post<AddMenuDto>('api/menus/parse-and-save-menu', formData, { headers: this.getHeaders() });
+    return this.http.post<AddMenuDto>('/api/menus/parse-and-save-menu', formData);
   }
 }
